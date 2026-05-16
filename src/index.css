@@ -1,0 +1,85 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,300;0,400;0,500;0,600;0,700;0,900;1,400&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+
+  /* Renk Tanımlamaları (İsimlerdeki boşluklar kaldırıldı) */
+  --color-secondary-1: #23856d;
+  --color-secondary-2: #3c403d;
+  --color-primary: #23a6f0;
+  --color-dark-bg: #252b42;
+  --color-light-bg: #ffffff;
+  --color-success: #2dc071;
+  --color-alert: #e77c40;
+  --color-danger: #e74040;
+  --color-hover: #2a7cc7;
+  --color-disabled: #8ec2f2;
+  --color-muted: #bdbdbd;
+  --color-light-gray-1: #fafafa;
+  --color-light-gray-2: #ececec;
+  --color-primary-text: #23a6f0;
+  --color-secondary-text-1: #40bb15;
+  --color-secondary-text-2: #3c403d;
+  --color-text: #252b42;
+  --color-second-text: #737373;
+  --color-light-text: #ffffff;
+  --color-success-text: #2dc071;
+  --color-alert-text: #e77c40;
+  --color-danger-text: #e74040;
+  --color-hover-text: #2a7cc7;
+  --color-disabled-text: #8ec2f2;
+  --color-muted-text: #bdbdbd;
+  --color-faded-primary: #b2e3ff;
+  --color-faded-secondary-1: #b9eaa8;
+  --color-faded-secondary-2: #ffdcd1;
+  --breakpoint-xs :480px;
+}
+
+
+@layer base {
+  h1 {
+   
+    @apply text-[58px] font-extrabold leading-20  tracking-[0.2px];
+  }
+  h2 {
+    @apply text-[40px] font-bold leading-14  tracking-[0.2px];
+  }
+  h3 {
+    @apply text-[24px] font-bold leading-8  tracking-[0.1px];
+  }
+   h4 {
+    @apply text-[20px] font-medium leading-7.5  tracking-[0.2px];
+  }
+   h5 {
+    @apply text-[16px] font-bold leading-6  tracking-[0.1px];
+  }
+   h6 {
+    @apply text-[14px] font-semibold leading-6  tracking-[0.2px];
+  }
+  p {
+    @apply text-[14px] font-medium leading-5 tracking-[0.1px];
+  }
+}
+@layer utilities {
+  .mobile-menu {
+    @apply text-[30px] leading-11 tracking-[0.2px];
+  }
+  .font-list {
+    @apply text-[20px] leading-7.5 tracking-[0.2px];
+  }
+  .font-link {
+    @apply text-[14px] font-semibold leading-6 tracking-[0.1px];
+  }
+}
+@layer components {
+  
+  .footer-links {
+    @apply flex flex-col gap-2.5; 
+  }
+
+
+  .footer-links li {
+    @apply text-[14px] leading-6 text-second-text font-bold list-none tracking-[0.2px];
+  }
+}
