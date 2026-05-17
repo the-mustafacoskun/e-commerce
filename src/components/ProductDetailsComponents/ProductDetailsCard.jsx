@@ -68,7 +68,7 @@ export function ProductDetailsCard() {
               <h6 className="text-second-text">{product.review} Reviews</h6>
             </div>
             <div className="flex flex-col gap-2 mt-3">
-              <h3>{product.price}</h3>
+              <h3>${product.price}</h3>
               <div className="flex gap-2">
                 <h6 className="text-second-text">Availability :</h6>
                 <h6 className={`${product.availability === true ? "text-primary" : "text-danger-text"}`}>

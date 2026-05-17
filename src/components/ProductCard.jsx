@@ -3,12 +3,12 @@ import { useHistory } from "react-router-dom";
 function ProductCard({ id,bgImgUrl, title, actualPrice, salePrice }) {
   const history =useHistory()
   return (
-    <div className="w-full" onClick={() => history.push(`/productDetails/${id}`)}>
+    <div className="w-full " onClick={() => history.push(`/productDetails/${id}`)}>
       <div className="flex flex-col justify-center items-center gap-4">
         
         <img 
           src={bgImgUrl} 
-          className="w-full min-h-105 object-cover" 
+          className="w-full min-h-105 object-cover hover:scale-120" 
           alt={title} 
         />
         <h5>{title}</h5>
