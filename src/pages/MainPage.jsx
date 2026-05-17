@@ -5,8 +5,8 @@ import { HalfSubCategoryCard } from "../components/HalfSubCategoryCard";
 import Hero from "../components/Hero";
 import ProductCard from "../components/ProductCard";
 import { SubCategoryCard } from "../components/SubCategoryCard";
+import { productsData } from "../data/products";
 
-// MainPage.jsx
 export default function MainPage() {
   return (
     <div className="w-full">
@@ -21,7 +21,7 @@ export default function MainPage() {
       </div>
 
       {/* Kartlar Bölümü: Mobilde alt alta, Tablette yanyana */}
-      <div className="max-w-7xl  flex flex-col md:flex-row gap-6 mx-10 md:mx-45 items-stretch">
+      <div className="max-w-7xl flex flex-col md:flex-row gap-6 mx-10 md:mx-45 items-stretch">
         {/* MEN - 1. Kolon */}
         <div className="flex-1">
           <SubCategoryCard bgImgUrl="/filter-1.png" title="MEN" />
@@ -42,97 +42,50 @@ export default function MainPage() {
           </div>
         </div>
       </div>
+
+      {/* BESTSELLER PRODUCTS ALANI */}
       <div className="my-20 flex flex-col gap-12 mx-10 md:mx-45">
-        <div className="flex flex-col text-center gap-4  ">
+        <div className="flex flex-col text-center gap-4">
           <h4>Featured Products</h4>
           <h3>
             BESTSELLER
-            <br className=" md:hidden" /> PRODUCTS
+            <br className="md:hidden" /> PRODUCTS
           </h3>
           <p>
             Problems trying to resolve the
             <br className="md:hidden" /> conflict between{" "}
           </p>
         </div>
-        {/* Elemanları map etmeyi dene */}
+
+        {/* Düzenlenen Kısım: Map fonksiyonu doğrudan ana flex kapsayıcısına uygulandı */}
         <div className="flex flex-wrap justify-center gap-7.5">
-          <div className="w-full sm:w-[calc(50%-30px)] md:w-[calc(33.33%-30px)] lg:w-[calc(25%-30px)]">
-            <ProductCard
-              bgImgUrl="/fixed-height.png"
-              title="Graphic Design"
-              actualPrice="$16.48"
-              salePrice="$6.48"
-            />
-          </div>
-
-          <div className="w-full sm:w-[calc(50%-30px)] md:w-[calc(33.33%-30px)] lg:w-[calc(25%-30px)]">
-            <ProductCard
-              bgImgUrl="/fixed-height (7).png"
-              title="Graphic Design"
-              actualPrice="$16.48"
-              salePrice="$6.48"
-            />
-          </div>
-
-          <div className="w-full sm:w-[calc(50%-30px)] md:w-[calc(33.33%-30px)] lg:w-[calc(25%-30px)]">
-            <ProductCard
-              bgImgUrl="/fixed-height (8).png"
-              title="Graphic Design"
-              actualPrice="$16.48"
-              salePrice="$6.48"
-            />
-          </div>
-
-          <div className="w-full sm:w-[calc(50%-30px)] md:w-[calc(33.33%-30px)] lg:w-[calc(25%-30px)]">
-            <ProductCard
-              bgImgUrl="/fixed-height (9).png"
-              title="Graphic Design"
-              actualPrice="$16.48"
-              salePrice="$6.48"
-            />
-          </div>
-          <div className="w-full sm:w-[calc(50%-30px)] md:w-[calc(33.33%-30px)] lg:w-[calc(25%-30px)]">
-            <ProductCard
-              bgImgUrl="/fixed-height (10).png"
-              title="Graphic Design"
-              actualPrice="$16.48"
-              salePrice="$6.48"
-            />
-          </div>
-          <div className="w-full sm:w-[calc(50%-30px)] md:w-[calc(33.33%-30px)] lg:w-[calc(25%-30px)]">
-            <ProductCard
-              bgImgUrl="/fixed-height (11).png"
-              title="Graphic Design"
-              actualPrice="$16.48"
-              salePrice="$6.48"
-            />
-          </div>
-          <div className="w-full sm:w-[calc(50%-30px)] md:w-[calc(33.33%-30px)] lg:w-[calc(25%-30px)]">
-            <ProductCard
-              bgImgUrl="/fixed-height (12).png"
-              title="Graphic Design"
-              actualPrice="$16.48"
-              salePrice="$6.48"
-            />
-          </div>
-          <div className="w-full sm:w-[calc(50%-30px)] md:w-[calc(33.33%-30px)] lg:w-[calc(25%-30px)]">
-            <ProductCard
-              bgImgUrl="/fixed-height (8).png"
-              title="Graphic Design"
-              actualPrice="$16.48"
-              salePrice="$6.48"
-            />
-          </div>
+          {productsData.map((product) => (
+            <div
+              key={product.id}
+              className="w-full sm:w-[calc(50%-15px)] md:w-[calc(33.33%-20px)] lg:w-[calc(25%-23px)]"
+            >
+              <ProductCard
+                id={product.id} // Tıklama yönlendirmesi için ID şart
+                bgImgUrl={product.img}
+                title={product.title}
+                actualPrice={product.actualPrice} // data dosyasındaki isimlendirmeyle eşitlendi
+                salePrice={product.salePrice}
+              />
+            </div>
+          ))}
         </div>
       </div>
+
       <div>
         <Carousel />
       </div>
       <div className="mt-8">
         <Container />
       </div>
+      
+      {/* BLOG ALANI */}
       <div className="my-20 md:my-28">
-        <div className="flex flex-col justify-center items-center text-center mx-19 mb-20  gap-2.5">
+        <div className="flex flex-col justify-center items-center text-center mx-19 mb-20 gap-2.5">
           <h6 className="text-primary-text">Practice Advice</h6>
           <h2>Featured Products</h2>
           <p className="text-second-text">

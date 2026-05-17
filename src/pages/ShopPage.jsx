@@ -2,66 +2,10 @@ import ProductCard from "../components/ProductCard";
 import { BrandsFav } from "../components/ShopComponents/BrandsFav";
 import { CategoryCard } from "../components/ShopComponents/CategoryCard";
 import { ViewAndFilterButtons } from "../components/ShopComponents/ViewAndFilterButtons";
+import { productsData } from "../data/products";
 
 function ShopPage() {
-  const products = [
-    {
-      id: 1,
-      img: "/fixed-height.png",
-      title: "Graphic Design",
-      salePrice: "$6.48",
-      actualPrice: "$16.48",
-    },
-    {
-      id: 2,
-      img: "/fixed-height (7).png",
-      title: "Graphic Design",
-      salePrice: "$6.48",
-      actualPrice: "$16.48",
-    },
-    {
-      id: 3,
-      img: "/fixed-height (8).png",
-      title: "Graphic Design",
-      salePrice: "$6.48",
-      actualPrice: "$16.48",
-    },
-    {
-      id: 4,
-      img: "/fixed-height (9).png",
-      title: "Graphic Design",
-      salePrice: "$6.48",
-      actualPrice: "$16.48",
-    },
-    {
-      id: 5,
-      img: "/fixed-height (10).png",
-      title: "Graphic Design",
-      salePrice: "$6.48",
-      actualPrice: "$16.48",
-    },
-    {
-      id: 6,
-      img: "/fixed-height (11).png",
-      title: "Graphic Design",
-      salePrice: "$6.48",
-      actualPrice: "$16.48",
-    },
-    {
-      id: 7,
-      img: "/fixed-height (12).png",
-      title: "Graphic Design",
-      salePrice: "$6.48",
-      actualPrice: "$16.48",
-    },
-    {
-      id: 8,
-      img: "/fixed-height (8).png",
-      title: "Graphic Design",
-      salePrice: "$6.48",
-      actualPrice: "$16.48",
-    },
-  ];
+  
   const category = [
     { id: 1, img: "/card-item-1.png", title: "CLOTHES", items: "5" },
     { id: 2, img: "/card-item-2.png", title: "CLOTHES", items: "5" },
@@ -96,7 +40,7 @@ function ShopPage() {
       {/* ÜRÜNLER ALANI */}
       <div className="my-15 mx-10 xl:mx-45">
         <div className="flex flex-wrap -mx-3.75">
-          {products.map((product) => (
+          {productsData.map((product) => (
             <div
               key={product.id}
               className="w-full px-3.75 mb-12 
@@ -105,6 +49,7 @@ function ShopPage() {
                          xl:w-1/4"
             >
               <ProductCard
+              id={product.id}
                 bgImgUrl={product.img}
                 title={product.title}
                 actualPrice={product.actualPrice}

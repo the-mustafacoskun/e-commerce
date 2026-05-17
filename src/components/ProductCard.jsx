@@ -1,8 +1,11 @@
-function ProductCard({ bgImgUrl, title, actualPrice, salePrice }) {
+import { useHistory } from "react-router-dom";
+
+function ProductCard({ id,bgImgUrl, title, actualPrice, salePrice }) {
+  const history =useHistory()
   return (
-    <div className="w-full">
+    <div className="w-full" onClick={() => history.push(`/productDetails/${id}`)}>
       <div className="flex flex-col justify-center items-center gap-4">
-        {/* Sabit min-w / max-w kaldırıldı. w-full ile sarmalayıcısına tam eşitlendi */}
+        
         <img 
           src={bgImgUrl} 
           className="w-full min-h-105 object-cover" 

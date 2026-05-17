@@ -71,6 +71,7 @@
   .font-link {
     @apply text-[14px] font-semibold leading-6 tracking-[0.1px];
   }
+  
 }
 @layer components {
   
@@ -82,4 +83,6 @@
   .footer-links li {
     @apply text-[14px] leading-6 text-second-text font-bold list-none tracking-[0.2px];
   }
+
+  
 }
