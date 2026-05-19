@@ -41,6 +41,12 @@ export default function PagesPage() {
               <p>Get in touch with us</p>
             </div>
           </Link>
+          <Link to="/team">
+            <div className="bg-gradient-to-br from-red-500 to-red-600 text-white rounded-lg p-12 hover:shadow-lg transition-shadow cursor-pointer">
+              <h2 className="text-3xl font-bold mb-2">Team</h2>
+              <p>Get in touch with us</p>
+            </div>
+          </Link>
         </div>
       </div>
     </div>

@@ -1,10 +1,11 @@
 import { Heart, Menu, Search, ShoppingCart, UserRound, X } from "lucide-react";
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink,useLocation } from "react-router-dom";
 
 function Header() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const location =useLocation();
 
   return (
     <header className="w-full bg-white shadow-sm sticky top-0 z-50">
@@ -43,7 +44,12 @@ function Header() {
                 <UserRound size={18} />
                 <button className="cursor-pointer hover:opacity-80 whitespace-nowrap">Login</button>
                 <span>/</span>
+                <Link to={{
+                  pathname:'/signup',
+                  state:{from : location.pathname}
+                }}>
                 <button className="cursor-pointer hover:opacity-80 whitespace-nowrap">Register</button>
+                </Link>
               </div>
 
               {/* İkonlar */}

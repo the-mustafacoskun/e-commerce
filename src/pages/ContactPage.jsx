@@ -44,24 +44,32 @@ export default function ContactPage() {
         </div>
       </div>
 
-      {/* SECTION 3: Lokasyonların MAP ile Listelendiği Alan */}
-      <div style={{ backgroundImage: `url(${contactData.section3.imgUrl})` }}>
-        <div className="mx-16 sm:mx-20 md:mx-24 lg:mx-28 ">
-          <div>
-            {" "}
+      {/* SECTION 3: Lokasyonların MAP ile listeleme Alan */}
+      <div
+        style={{ backgroundImage: `url(${contactData.section3.imgUrl})` }}
+        className="py-40 bg-cover relative"
+      >
+        {/* SAĞDAN SOLA RENK KATMANI  */}
+        <div className="absolute inset-0 bg-linear-to-l from-transparent to-black/80 pointer-events-none"></div>
+
+        {/* İÇERİK SARMALAYICI (Üste çıkması için relative z-10 eklendi) */}
+        <div className="mx-16 sm:mx-20 md:mx-24 lg:mx-28 text-light-text flex flex-col items-center md:flex-row gap-12 h-full relative z-10">
+          <div className="flex-1 md:px-10 max-w-md text-center md:text-left ">
             <h2>{contactData.section3.title}</h2>
-            <p className="text-second-text mb-12 max-w-2xl mx-auto">
+            <p className="text-light-text my-12">
               {contactData.section3.subTitle}
             </p>
             <button className="bg-primary rounded-sm hover:bg-hover text-light-text py-4 px-7.5 text-[14px] leading-5.5 tracking-[0.2px]">
-          {contactData.section3.buttonText}
-        </button>
+              {contactData.section3.buttonText}
+            </button>
           </div>
 
-          {/* Lokasyon kartları için MAP kullanımı (4 ayrı div yazmaktan kurtulduk) */}
-          <div className="flex flex-col gap-8 text-light-gray-2">
+          <div className="flex flex-wrap gap-8 text-light-gray-2 flex-1 w-full md:w-1/2">
             {contactData.section3.locations.map((loc, index) => (
-              <div key={index} className="">
+              <div
+                key={index}
+                className="w-full flex flex-col px-10 sm:px-0 gap-4 md:w-[calc(50%-1rem)]"
+              >
                 <h3>{loc.location}</h3>
                 <h4>{loc.address}</h4>
                 <h5>{loc.postCode}</h5>
@@ -74,23 +82,32 @@ export default function ContactPage() {
       </div>
 
       {/* SECTION 4: Bizimle Çalışın Alanı */}
-      <div className="flex flex-col lg:flex-row items-center gap-12 mx-16 sm:mx-20 md:mx-24 lg:mx-28">
-        <div className="flex-1 flex flex-col gap-4 text-center lg:text-left items-center lg:items-start">
-          <h5 className="text-primary font-bold">
-            {contactData.section4.title1}
-          </h5>
-          <h2>{contactData.section4.title2}</h2>
-          <p className="text-second-text">{contactData.section4.subTitle}</p>
-          <button className="bg-primary text-light-text py-3 px-8 rounded-sm text-sm font-bold mt-4">
-            {contactData.section4.buttonText}
-          </button>
-        </div>
-        <div className="flex-1">
-          <img
-            src={contactData.section4.imgUrl}
-            alt="Work With Us"
-            className="w-full max-h-96 object-cover rounded-lg"
-          />
+      {/* SECTION 4: Bizimle Çalışın Alanı */}
+      <div className="bg-hover h-full w-full overflow-hidden">
+       
+        <div className="flex flex-col lg:flex-row items-center gap-16 pl-20 sm:pl-24 md:pl-28 lg:pl-32">
+          {/* SOL TARAF: Yazı Alanı */}
+          <div className="flex-1 flex flex-col gap-4 py-16 text-center lg:text-left items-center lg:items-start pr-20 sm:pr-20 md:px-10">
+            <h5 className="text-white/90 font-bold">
+              {contactData.section4.title1}
+            </h5>
+            <h2 className="text-white">{contactData.section4.title2}</h2>
+            <p className="text-white/70">{contactData.section4.subTitle}</p>
+
+            <button className="text-light-text border border-light-text hover:scale-120 py-3 px-8 rounded-sm text-sm font-bold mt-4 hover:bg-opacity-90 transition-all">
+              {contactData.section4.buttonText}
+            </button>
+          </div>
+
+          {/* SAĞ TARAF: Resim Alanı */}
+          {/* flex-1 yerine w-full lg:w-1/2 verilerek ve self-stretch ile dikeyde tam sağa sıfırlandı */}
+          <div className="hidden md:block w-full lg:w-1/2 h-full self-stretch">
+            <img
+              src={contactData.section4.imgUrl}
+              alt="Work With Us"
+              className="w-full h-full object-contain object-right rounded-r-lg"
+            />
+          </div>
         </div>
       </div>
     </div>
