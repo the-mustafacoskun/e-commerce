@@ -70,6 +70,7 @@ export default function MainPage() {
                 title={product.title}
                 actualPrice={product.actualPrice} // data dosyasındaki isimlendirmeyle eşitlendi
                 salePrice={product.salePrice}
+                colors={product.colors}
               />
             </div>
           ))}

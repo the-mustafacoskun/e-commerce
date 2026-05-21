@@ -1,8 +1,8 @@
 import { useHistory } from "react-router-dom";
 
-function ProductCard({ id,bgImgUrl, title, actualPrice, salePrice }) {
+function ProductCard({ id,bgImgUrl, title, actualPrice, salePrice ,colors=[]}) {
   const history =useHistory()
-  const colors=['primary','alert','dark-bg','secondary-1']
+ 
   return (
     <div className="w-full " onClick={() => history.push(`/productDetails/${id}`)}>
       <div className="flex flex-col justify-center items-center gap-4">
@@ -18,7 +18,7 @@ function ProductCard({ id,bgImgUrl, title, actualPrice, salePrice }) {
           <h5 className="text-muted">{actualPrice}</h5>
           <h5 className="text-secondary-1">{salePrice}</h5>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-3" onClick={(e)=>e.stopPropagation()}>
           {colors.map((color,index)=>(
             <label key={index} className="flex items-center cursor-pointer">
             <input type="radio" name="color" className="sr-only peer" />

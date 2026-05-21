@@ -14,7 +14,7 @@ export const productsData = [
     review: 10,
     availability: true,
     description: "Met minim Mollie non desert Alamo est sit cliquey dolor do met sent. RELIT official consequent door ENIM RELIT Mollie. Excitation venial consequent sent nostrum met.",
-    colors: ["primary", "success", "alert", "dark-bg"],
+    colors: ["primary", "success", "yellow", "dark-bg"],
     details: [
       "the quick fox jumps over the lazy dog",
       "the quick fox jumps over the lazy dog",

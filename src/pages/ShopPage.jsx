@@ -54,6 +54,7 @@ function ShopPage() {
                 title={product.title}
                 actualPrice={product.actualPrice}
                 salePrice={product.salePrice}
+                colors = {product.colors}
               />
             </div>
           ))}
