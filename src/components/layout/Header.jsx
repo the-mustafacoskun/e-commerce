@@ -15,7 +15,7 @@ function Header() {
       {/* 
        
       */}
-      <div className="px-4 sm:px-6 lg:mx-10 xl:mx-45 flex flex-col items-center">
+      <div className="px-10 sm:px-6 lg:px-10 xl:px-20 flex flex-col items-center">
         <div className="w-full flex flex-col py-6 lg:py-9 gap-4">
           <div className="w-full flex justify-between items-center">
             {/* SOL GRUP */}

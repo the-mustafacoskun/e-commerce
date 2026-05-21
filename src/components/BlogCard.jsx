@@ -2,7 +2,7 @@ import { AlarmClock, ChartArea, ChevronRight } from "lucide-react";
 
 export function BlogCard({bgImgUrl}) {
   return (
-    <div className="flex flex-col mx-10.5 pb-8 md:mx-0 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 gap-6 bg-white overflow-hidden">
+    <div className="flex flex-col pb-8 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 gap-6 bg-white overflow-hidden flex-1">
       <div className="relative">
         <img src={bgImgUrl} className="w-full object-cover" alt="Blog" ></img>
         <div className="absolute top-5 left-5 bg-danger rounded-sm text-white z-10 px-2.5">NEW</div>

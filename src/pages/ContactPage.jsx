@@ -4,7 +4,7 @@ export default function ContactPage() {
   return (
     <div className="w-full space-y-24 py-12">
       {/* SECTION 1: Sosyal Medya İkonlu Alan */}
-      <div className="flex flex-col gap-8 mx-16 sm:mx-20 md:mx-24 lg:mx-28 text-center items-center">
+      <div className="flex flex-col gap-8 px-10 sm:px-6 lg:px-10 xl:px-20 text-center items-center">
         <h2>{contactData.section1.title}</h2>
         <h4>{contactData.section1.subTitle}</h4>
         <button className="bg-primary rounded-sm hover:bg-hover text-light-text py-4 px-7.5 text-[14px] leading-5.5 tracking-[0.2px]">
@@ -53,7 +53,7 @@ export default function ContactPage() {
         <div className="absolute inset-0 bg-linear-to-l from-transparent to-black/80 pointer-events-none"></div>
 
         {/* İÇERİK SARMALAYICI (Üste çıkması için relative z-10 eklendi) */}
-        <div className="mx-16 sm:mx-20 md:mx-24 lg:mx-28 text-light-text flex flex-col items-center md:flex-row gap-12 h-full relative z-10">
+        <div className="px-10 sm:px-6 lg:px-10 xl:px-20 text-light-text flex flex-col items-center md:flex-row gap-12 h-full relative z-10">
           <div className="flex-1 md:px-10 max-w-md text-center md:text-left ">
             <h2>{contactData.section3.title}</h2>
             <p className="text-light-text my-12">

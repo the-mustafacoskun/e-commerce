@@ -1,10 +1,10 @@
 export function Container() {
   return (
     
-    <div className="flex flex-col md:flex-row-reverse gap-8 items-center max-w-7xl mx-auto px-4">
+    <div className="flex flex-col md:flex-row-reverse gap-8 items-center max-w-7xl mx-auto px-10 sm:px-6 lg:px-10 xl:px-20">
       
       {/* Metin İçeriği Bölümü */}
-      <div className="flex flex-col gap-8 justify-center items-center text-center p-8 md:p-20 md:items-start md:text-left flex-1">
+      <div className="flex flex-col gap-8 justify-center items-center text-center p-0 sm:p-8 md:p-20 md:items-start md:text-left flex-1">
         <h5 className="text-muted-text font-bold">WINTER 2027</h5>
         <h2 className="text-4xl font-bold">Part of the Neural Universe</h2>
         <h4 className="text-second-text max-w-95">
@@ -23,7 +23,7 @@ export function Container() {
       </div>
 
       {/* Resim Bölümü */}
-      <div className="flex justify-center items-center flex-1">
+      <div className="flex justify-center items-center flex-1 w-full">
         <img 
           src="/none.png" 
           alt="Neural Universe" 

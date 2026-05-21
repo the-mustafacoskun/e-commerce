@@ -3,7 +3,7 @@ function Footer() {
     <footer className="w-full overflow-hidden bg-white">
       {/* 1. ÜST ŞERİT (Logo & Sosyal Medya) */}
       <div className="w-full bg-light-gray-1 py-10">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 px-10  lg:mx-10 xl:mx-45">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 px-10 sm:px-6 lg:px-10 xl:px-20">
           <h3 className="text-2xl font-bold text-text">Bandage</h3>
           <div className="flex gap-5">
             <img src="/facebook.png" alt="fb" className="w-6 h-6 object-contain cursor-pointer" />
@@ -18,7 +18,7 @@ function Footer() {
         - flex-wrap sayesinde sığmayan elemanlar pürüzsüzce alt satıra geçer.
         - Aralardaki boşlukları flex düzeninde korumak için gap-8 ve negatif margin dengesi kurduk.
       */}
-      <div className="my-18 md:my-12.5 px-10  lg:mx-10 xl:mx-45">
+      <div className="my-18 md:my-12.5 px-10 sm:px-6 lg:px-10 xl:px-20">
         <div className="flex flex-wrap gap-y-10 -mx-4 justify-between">
           
           {/* Company Info */}
@@ -89,7 +89,7 @@ function Footer() {
 
       {/* 3. ALT BİLGİ */}
       <div className="w-full bg-light-gray-1 py-6">
-        <div className="px-4 sm:px-6 lg:mx-10 xl:mx-45 text-center sm:text-left">
+        <div className="px-10 sm:px-6 lg:px-10 xl:px-20 text-center sm:text-left">
           <h6 className="text-second-text font-bold text-sm tracking-wide">
             Made With Love By Finland All Right Reserved
           </h6>

@@ -27,7 +27,7 @@ export function ProductDetailsCard() {
       {/* 1. ÇOCUK: ÜRÜN ANA KARTI */}
       <div className="w-full py-8">
        
-        <div className="mx-8 sm:mx-12 md:mx-20 lg:mx-30 xl:mx-45 flex flex-col md:flex-row md:gap-7.5">
+        <div className="px-10 sm:px-6 lg:px-10 xl:px-20 flex flex-col md:flex-row md:gap-7.5 max-w-7xl xl:mx-auto">
           
           {/* Sol Kolon: Görseller */}
           <div className="flex flex-col gap-5 flex-1">
@@ -114,7 +114,7 @@ export function ProductDetailsCard() {
       
       <div className="w-full py-8">
     
-        <div className="mx-8 sm:mx-12 md:mx-20 lg:mx-30 xl:mx-45 flex flex-col gap-8 justify-center items-center">
+        <div className="px-10 sm:px-6 lg:px-10 xl:px-20 flex flex-col gap-8 justify-center items-center max-w-7xl xl:mx-auto">
           
           {/* Subheader Menü */}
           <div className="w-full text-sm pb-2 pt-6 flex gap-4 justify-between md:justify-center md:gap-7.5 font-bold [&_button]:hover:border-b [&_button]:text-second-text">

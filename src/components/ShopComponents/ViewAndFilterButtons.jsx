@@ -2,7 +2,7 @@ import {  ChevronDown, LayoutGrid, TableOfContents } from "lucide-react";
 
 export const ViewAndFilterButtons = () => {
   return (
-    <div className="flex flex-col justify-center md:flex-row md:justify-between md:mx-45 items-center gap-6 my-6">
+    <div className="flex flex-col justify-center md:flex-row md:justify-between md:px-10 xl:px-20 items-center gap-6 my-6 max-w-7xl xl:mx-auto">
       <div className="text-second-text">
         <h6>Showing all 12 results</h6>
       </div>

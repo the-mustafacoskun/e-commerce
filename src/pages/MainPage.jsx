@@ -13,7 +13,7 @@ export default function MainPage() {
       <Hero />
 
       {/* Editor's Pick Başlık Bölümü */}
-      <div className="flex flex-col items-center gap-2 mt-20 mb-12 px-4">
+      <div className="flex flex-col items-center gap-2 mt-20 mb-12 px-10 sm:px-6 lg:px-10 xl:px-20">
         <h3 className="font-bold text-2xl">EDITOR'S PICK</h3>
         <p className="text-second-text text-center">
           Problems trying to resolve the conflict between
@@ -21,7 +21,7 @@ export default function MainPage() {
       </div>
 
       {/* Kartlar Bölümü: Mobilde alt alta, Tablette yanyana */}
-      <div className="max-w-7xl flex flex-col md:flex-row gap-6 mx-10 md:mx-45 items-stretch">
+      <div className="max-w-7xl flex flex-col md:flex-row gap-6 px-10 sm:px-6 lg:px-10 xl:px-20 xl:mx-auto items-stretch mx-auto">
         {/* MEN - 1. Kolon */}
         <div className="flex-1">
           <SubCategoryCard bgImgUrl="/filter-1.png" title="MEN" />
@@ -44,7 +44,7 @@ export default function MainPage() {
       </div>
 
       {/* BESTSELLER PRODUCTS ALANI */}
-      <div className="my-20 flex flex-col gap-12 mx-10 md:mx-45">
+      <div className="my-20 flex flex-col gap-12 px-10 sm:px-6 lg:px-10 xl:px-20 xl:mx-auto max-w-7xl mx-auto">
         <div className="flex flex-col text-center gap-4">
           <h4>Featured Products</h4>
           <h3>
@@ -77,16 +77,16 @@ export default function MainPage() {
         </div>
       </div>
 
-      <div>
+      <div className="w-full">
         <Carousel />
       </div>
-      <div className="mt-8">
+      <div className="w-full mt-8">
         <Container />
       </div>
       
       {/* BLOG ALANI */}
       <div className="my-20 md:my-28">
-        <div className="flex flex-col justify-center items-center text-center mx-19 mb-20 gap-2.5">
+        <div className="flex flex-col justify-center items-center text-center px-10 sm:px-6 lg:px-10 xl:px-20 mb-20 gap-2.5 max-w-7xl mx-auto">
           <h6 className="text-primary-text">Practice Advice</h6>
           <h2>Featured Products</h2>
           <p className="text-second-text">
@@ -94,7 +94,7 @@ export default function MainPage() {
             of Classical physics: Newtonian mechanics
           </p>
         </div>
-        <div className="flex flex-col md:flex-row gap-7.5 md:gap-2.5 md:mx-45">
+        <div className="flex flex-col md:flex-row gap-7.5 md:gap-2.5 px-10 sm:px-6 lg:px-10 xl:px-20 xl:mx-auto max-w-7xl mx-auto">
           <BlogCard bgImgUrl='/unsplash_1.png' />
           <BlogCard bgImgUrl='/unsplash_2.png' />
           <BlogCard bgImgUrl='/unsplash_3.png'/>

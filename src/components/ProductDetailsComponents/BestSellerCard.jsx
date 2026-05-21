@@ -6,10 +6,10 @@ export function BestSellerCard() {
   
   return (
     <div>
-      <h3 className="mx-8 sm:mx-12 md:mx-20 lg:mx-30 xl:mx-45 border-b border-dotted border-second-text text-center md:text-start pb-4 my-6">
+      <h3 className="px-10 sm:px-6 lg:px-10 xl:px-20 border-b border-dotted border-second-text text-center md:text-start pb-4 my-6">
         BESTSELLER PRODUCTS
       </h3>
-      <div className="mx-8 sm:mx-12 md:mx-20 lg:mx-30 xl:mx-45 flex flex-col md:flex-row flex-wrap gap-7.5">
+      <div className="px-10 sm:px-6 lg:px-10 xl:px-20 flex flex-col md:flex-row flex-wrap gap-7.5 max-w-7xl xl:mx-auto">
         {productsData.slice(0, 8).map((card, index) => (
           <div 
             key={card.id} 

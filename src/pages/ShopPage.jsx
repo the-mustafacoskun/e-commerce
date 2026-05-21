@@ -19,34 +19,35 @@ function ShopPage() {
       {/* 
         Dış boşlukları (Margin) kademeli yaptık:
       */}
-      <div className="mx-10 xl:mx-45 py-8">
+      <div className="px-10 sm:px-6 lg:px-10 xl:px-20 py-8 max-w-7xl xl:mx-auto">
        
-        <div className="flex flex-col sm:flex-row sm:flex-wrap xl:flex-nowrap -mx-2 gap-y-4">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap xl:flex-nowrap gap-4">
           {category.map((cat) => (
-            <CategoryCard
-              key={cat.id}
-              bgImgUrl={cat.img}
-              title={cat.title}
-              items={cat.items}
-            />
+            <div key={cat.id} className="flex-1 min-w-0">
+              <CategoryCard
+                bgImgUrl={cat.img}
+                title={cat.title}
+                items={cat.items}
+              />
+            </div>
           ))}
         </div>
       </div>
 
-      <div className="px-10">
+      <div className="px-10 sm:px-6 lg:px-10 xl:px-20">
         <ViewAndFilterButtons />
       </div>
 
       {/* ÜRÜNLER ALANI */}
-      <div className="my-15 mx-10 xl:mx-45">
-        <div className="flex flex-wrap -mx-3.75">
+      <div className="my-15 px-10 sm:px-6 lg:px-10 xl:px-20 max-w-7xl xl:mx-auto">
+        <div className="flex flex-wrap gap-6">
           {productsData.map((product) => (
             <div
               key={product.id}
-              className="w-full px-3.75 mb-12 
-                         sm:w-1/2 
-                         md:w-1/3 
-                         xl:w-1/4"
+              className="w-full 
+                         sm:w-[calc(50%-12px)]
+                         md:w-[calc(33.33%-16px)] 
+                         lg:w-[calc(25%-18px)]"
             >
               <ProductCard
               id={product.id}
@@ -62,20 +63,20 @@ function ShopPage() {
       </div>
 
       {/* Sayfalama */}
-      <div className="flex justify-center items-center my-10">
-        <button className="p-6.25 bg-[#F3F3F3]  hover:bg-[#DDDDDD] border border-neutral-200/80 text-neutral-600 rounded-l-sm cursor-pointer">
+      <div className="flex justify-center items-center my-10 gap-1">
+        <button className="px-4 py-3 sm:px-6.25 sm:py-6.25 bg-[#F3F3F3]  hover:bg-[#DDDDDD] border border-neutral-200/80 text-neutral-600 rounded-l-sm cursor-pointer text-sm sm:text-base">
           First
         </button>
-        <button className="py-6.25 px-5 text-primary-text hover:scale-120 bg-white border border-neutral-200/80 cursor-pointer">
+        <button className="px-3 py-3 sm:py-6.25 sm:px-5 text-primary-text hover:scale-120 bg-white border border-neutral-200/80 cursor-pointer text-sm sm:text-base">
           1
         </button>
-        <button className="py-6.25 px-5 text-primary-text hover:scale-120 bg-white border border-neutral-200/80 cursor-pointer">
+        <button className="px-3 py-3 sm:py-6.25 sm:px-5 text-primary-text hover:scale-120 bg-white border border-neutral-200/80 cursor-pointer text-sm sm:text-base">
           2
         </button>
-        <button className="py-6.25 px-5 text-primary-text hover:scale-120 bg-white border border-neutral-200/80 cursor-pointer">
+        <button className="px-3 py-3 sm:py-6.25 sm:px-5 text-primary-text hover:scale-120 bg-white border border-neutral-200/80 cursor-pointer text-sm sm:text-base">
           3
         </button>
-        <button className="p-6.25 bg-primary  hover:bg-hover text-white border border-neutral-200/80 rounded-r-sm cursor-pointer">
+        <button className="px-4 py-3 sm:px-6.25 sm:py-6.25 bg-primary  hover:bg-hover text-white border border-neutral-200/80 rounded-r-sm cursor-pointer text-sm sm:text-base">
           Next
         </button>
       </div>

@@ -37,7 +37,7 @@ export default function AboutPage() {
           <p className="text-danger-text text-center md:text-left font-semibold">
             Problems trying
           </p>
-          <div className="flex flex-col md:flex-row gap-8 lg:gap-16 mx-12 md:mx-0 items-start text-center md:text-left">
+          <div className="flex flex-col md:flex-row gap-8 lg:gap-16 px-10 sm:px-6 md:px-0 items-start text-center md:text-left">
             <h3 className="w-full md:w-1/2 text-xl md:text-2xl font-bold">
               Met minim Mollie non desert Alamo est sit cliquey dolor do met
               sent.
@@ -77,7 +77,7 @@ export default function AboutPage() {
         </div>
       </div>
       <div className="flex flex-col gap-12 py-20">
-        <div className="mx-15 md:mx-20 lg:mx-25 xl:mx-30 text-center flex flex-col gap-6">
+        <div className="px-10 sm:px-6 lg:px-10 xl:px-20 text-center flex flex-col gap-6">
           <h2>Big Companies Are Here</h2>
           <p className="text-second-text">
             Problems trying to resolve the conflict between the two major realms

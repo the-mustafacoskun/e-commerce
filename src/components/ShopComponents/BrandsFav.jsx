@@ -11,7 +11,7 @@ export function BrandsFav() {
   ]
 
   return (
-    <div className="flex flex-row justify-center flex-wrap py-10 sm:justify-between items-center gap-10 mx-10 sm:mx-12 md:mx-20 lg:mx-30 xl:mx-45 ">
+    <div className="flex flex-row justify-center flex-wrap py-10 sm:justify-between items-center gap-10 px-10 sm:px-6 lg:px-10 xl:px-20 max-w-7xl xl:mx-auto">
           {brands.map((brand)=>(
             <img key={brand.id} src={brand.img} className="w-24"/>
           ))}
