@@ -19,9 +19,9 @@ function ShopPage() {
       {/* 
         Dış boşlukları (Margin) kademeli yaptık:
       */}
-      <div className="px-10 sm:px-6 lg:px-10 xl:px-20 py-8 max-w-7xl xl:mx-auto">
+      <div className="px-10 sm:px-6 lg:px-10 xl:px-20 py-8 w-full">
        
-        <div className="flex flex-col sm:flex-row sm:flex-wrap xl:flex-nowrap gap-4">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap xl:flex-nowrap gap-4 sm:gap-2 lg:gap-1.5">
           {category.map((cat) => (
             <div key={cat.id} className="flex-1 min-w-0">
               <CategoryCard

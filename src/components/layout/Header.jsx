@@ -15,7 +15,7 @@ function Header() {
       {/* 
        
       */}
-      <div className="px-10 sm:px-6 lg:px-10 xl:px-20 flex flex-col items-center">
+      <div className="max-w-7xl mx-auto px-10 sm:px-6 lg:px-10 xl:px-20 flex flex-col items-center w-full">
         <div className="w-full flex flex-col py-6 lg:py-9 gap-4">
           <div className="w-full flex justify-between items-center">
             {/* SOL GRUP */}
@@ -119,27 +119,27 @@ function Header() {
               )}
 
               {/* İkonlar */}
-              <div className="flex items-center gap-3 lg:gap-4">
+              <div className="flex items-center gap-3 lg:gap-4 text-primary">
                 <button
                   onClick={() => setIsSearchOpen(!isSearchOpen)}
                   className="hover:scale-110 transition-transform"
                 >
-                  <Search className="w-5 h-5 cursor-pointer" />
+                  <Search className="w-5 h-5 text-primary cursor-pointer" />
                 </button>
 
-                <div className="flex items-center gap-1">
-                  <ShoppingCart className="w-5 h-5 cursor-pointer" />
-                  <span className="text-xs font-normal">1</span>
+                <div className="flex items-center gap-1 text-primary">
+                  <ShoppingCart className="w-5 h-5 text-primary cursor-pointer" />
+                  <span className="text-xs font-normal text-primary">1</span>
                 </div>
 
-                <div className="hidden sm:flex items-center gap-1">
-                  <Heart className="w-5 h-5 cursor-pointer" />
-                  <span className="text-xs font-normal">1</span>
+                <div className="hidden sm:flex items-center gap-1 text-primary">
+                  <Heart className="w-5 h-5 text-primary cursor-pointer" />
+                  <span className="text-xs font-normal text-primary">1</span>
                 </div>
 
                 {/* Mobil Hamburger: lg:hidden yapıldı (820px'de görünür olacak) */}
                 <button
-                  className="lg:hidden p-1 text-text"
+                  className="lg:hidden p-1 text-text pr-0 sm:pr-4"
                   onClick={() => setIsMobileOpen(!isMobileOpen)}
                 >
                   {isMobileOpen ? <X size={28} /> : <Menu size={28} />}
@@ -208,7 +208,7 @@ function Header() {
           </Link>
           
               {user && user.avatarUrl && user.token ? (
-                <div className="hidden lg:flex">
+                <div className="flex lg:hidden items-center gap-2">
                   <span className="text-sm font-medium text-gray-700">
                     {user.name}
                   </span>
@@ -219,26 +219,26 @@ function Header() {
                   />
                 </div>
               ) : (
-                <div className="hidden lg:flex items-center gap-2 mr-4">
-                  <UserRound size={18} />
+                 <div className="flex lg:hidden items-center gap-2 text-primary font-bold">
+                  <UserRound size={18} className="text-primary" />
                   <Link
                     to={{
                       pathname: "/login",
                       state: { from: location.pathname },
                     }}
                   >
-                    <button className="cursor-pointer hover:opacity-80 whitespace-nowrap">
+                    <button className="text-primary cursor-pointer hover:opacity-80 whitespace-nowrap">
                       Login
                     </button>
                   </Link>
-                  <span>/</span>
+                  <span className="text-primary">/</span>
                   <Link
                     to={{
                       pathname: "/signup",
                       state: { from: location.pathname },
                     }}
                   >
-                    <button className="cursor-pointer hover:opacity-80 whitespace-nowrap">
+                    <button className="text-primary cursor-pointer hover:opacity-80 whitespace-nowrap">
                       Register
                     </button>
                   </Link>
