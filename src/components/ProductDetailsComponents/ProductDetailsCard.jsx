@@ -11,11 +11,13 @@ import { useParams, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 export function ProductDetailsCard() {
-  const { id } = useParams();
+  const { productId } = useParams();
 
   const productsData = useSelector((store) => store.product.productList);
   const products = productsData?.products || [];
-  const product = productsData?.products?.find((item) => item.id === Number(id));
+  const product = productsData?.products?.find(
+    (item) => item.id === Number(productId),
+  );
   const fetchState = useSelector((store) => store.product.fetchState);
   const colorsVariants = [
     "bg-amber-500",
@@ -79,7 +81,31 @@ export function ProductDetailsCard() {
           <div className="flex flex-col gap-4 my-2 p-6 flex-1">
             <h4>{product.name}</h4>
             <div className="flex gap-3">
-              <Star fill="gold" className="text-amber-400"/>
+              {/*Filling stars*/}
+              <div className="flex">
+                {Array.from({ length: 5 }).map((_, index) => {
+                  const fillNumber = Math.floor(product.rating) > index;
+                  const partialFillNumber = (product.rating - index) * 100;
+                  return (
+                    <div className="relative" key={index}>
+                      {index===Math.floor(product.rating)&&(<div
+                        style={{ width: `${partialFillNumber}%`,whiteSpace: "nowrap" }}
+                        className={`absolute top-0 left-0   overflow-hidden`}
+                      >
+                        <Star
+                         className="text-amber-400 " fill="gold" 
+                        />
+                      </div>)}
+                      <Star 
+                      
+                       className=" text-amber-400"
+                          fill={`${fillNumber ? "gold" : "white"}`}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+
               <h6 className="text-second-text">{product.rating} </h6>
             </div>
             <div className="flex flex-col gap-2 mt-3">
@@ -179,18 +205,19 @@ export function ProductDetailsCard() {
               <div className="flex-1 flex flex-col gap-4">
                 <h3>{product.name}</h3>
                 <div className="text-second-text flex flex-col gap-2">
-                  {product.description.split(" ")?.filter((item)=>item !=="").map((item, index) => {
-
-                    return (
-                      <div key={index} className="flex items-center gap-2">
-                        <ChevronRight className="w-4 h-4" />
-                        <h6>{item}</h6>
-                      </div>
-                    );
-                  })}
+                  {product.description
+                    .split(" ")
+                    ?.filter((item) => item !== "")
+                    .map((item, index) => {
+                      return (
+                        <div key={index} className="flex items-center gap-2">
+                          <ChevronRight className="w-4 h-4" />
+                          <h6>{item}</h6>
+                        </div>
+                      );
+                    })}
                 </div>
               </div>
-             
             </div>
           </div>
         </div>

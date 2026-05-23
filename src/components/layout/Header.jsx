@@ -23,8 +23,7 @@ function Header() {
 
   const categories = useSelector((store) => store.product.categories);
 
-  
-  console.log(categories);
+
 
   return (
     <header className="w-full bg-white shadow-sm sticky top-0 z-50">

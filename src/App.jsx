@@ -22,21 +22,27 @@ function App() {
     
      dispatch(fetchCategories());
     
-    if (!localStorage.getItem("token")) {
-      return;
+    if (localStorage.getItem("token")) {
+       dispatch(verifyUser());
     }
-    dispatch(verifyUser());
    
-  }, []);
+   
+  }, [dispatch]);
 
   return (
     <MainLayout>
       <Switch>
-        <Route exact path="/" component={MainPage} />
-        <Route path="/shop/:gender?/:categoryName?/:categoryId?" component={ShopPage} />
+        
         <Route
           exact
-          path="/productDetails/:id"
+          path="/shop/:gender/:categoryName/:categoryId/:productNameSlug/:productId"
+          component={ProductDetailsPage}
+        />
+        <Route path="/shop/:gender?/:categoryName?/:categoryId?" component={ShopPage} />
+        
+        <Route
+          exact
+          path="/products/:productId"
           component={ProductDetailsPage}
         />
         <Route path="/contact" component={ContactPage} />
@@ -46,6 +52,7 @@ function App() {
         <Route path="/about" component={AboutPage} />
         <Route path="/signup" component={SignUp} />
         <Route path="/login" component={LoginPage} />
+        <Route exact path="/" component={MainPage} />
       </Switch>
     </MainLayout>
   );

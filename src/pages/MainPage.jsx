@@ -8,6 +8,13 @@ import { SubCategoryCard } from "../components/SubCategoryCard";
 import { productsData } from "../data/products";
 
 export default function MainPage() {
+   const colorsVariants = [
+    "bg-amber-500",
+    "bg-blue-600",
+    "bg-green-400",
+    "bg-red-300",
+  ];
+
   return (
     <div className="w-full">
       <Hero />
@@ -70,7 +77,7 @@ export default function MainPage() {
                 title={product.title}
                 actualPrice={product.actualPrice} // data dosyasındaki isimlendirmeyle eşitlendi
                 salePrice={product.salePrice}
-                colors={product.colors}
+                colorsVariants={colorsVariants}
               />
             </div>
           ))}

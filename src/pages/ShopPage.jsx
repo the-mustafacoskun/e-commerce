@@ -3,15 +3,15 @@ import ProductCard from "../components/ProductCard";
 import { BrandsFav } from "../components/ShopComponents/BrandsFav";
 import { CategoryCard } from "../components/ShopComponents/CategoryCard";
 import { ViewAndFilterButtons } from "../components/ShopComponents/ViewAndFilterButtons";
-import { useParams } from "react-router-dom";
-import { useEffect } from "react";
-import { fetchProductLists, setProductList } from "../store/actions/productActions";
+import { useParams, useHistory } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { fetchProductLists } from "../store/actions/productActions";
 
 function ShopPage() {
   const categories = useSelector((store) => store.product.categories);
   const products = useSelector((store) => store.product.productList);
-  const { gender, categoryName, categoryId } = useParams();
-   const dispatch = useDispatch();
+  const { gender,categoryName,categoryId } = useParams();
+  const dispatch = useDispatch();
   const colorsVariants = [
     "bg-amber-500",
     "bg-blue-600",
@@ -19,14 +19,45 @@ function ShopPage() {
     "bg-red-300",
   ];
   const totalProducts = useSelector((store) => store.product.total);
-  const fetchState = useSelector((store) => store.product.fetchState);//"FETCHING"
-  console.log("Toplam Ürün Adedi", totalProducts);
+  const fetchState = useSelector((store) => store.product.fetchState); //"FETCHING"
 
-  useEffect(()=>{
-     dispatch(fetchProductLists(categoryId));
-    
-  },[categoryId])
+  const [sort, setSort] = useState("");
+  const [filter, setFilter] = useState("");
+  const [searchInputs, setSearchInputs] = useState("");
+  const history = useHistory();
+  // 💡 HAKİKİ ÇÖZÜM BURASI: Her kategorinin toplam ürün adedini tutacağımız yer
+  const [categoryCounts, setCategoryCounts] = useState({});
 
+  // 1. ADIM: Sayfa ilk açıldığında API'den tüm ürünlerin sayılarını öğrenmek için arka planda bir tarama yapıyoruz
+  useEffect(() => {
+    // Projedeki tüm ürünleri (limit vermeden veya yüksek bir limit vererek) sorguluyoruz
+    // Workintech API standartlarında `limit=1000` veya parametresiz istek tüm ürün adetlerini kategorize etmemizi sağlar
+    fetch("https://workintech-fe-ecommerce.onrender.com/products?limit=1000")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.products) {
+          // Ürünleri kategorilerine göre gruplayıp sayıyoruz
+          const counts = {};
+          data.products.forEach((product) => {
+            const catId = product.category_id;
+            counts[catId] = (counts[catId] || 0) + 1;
+          });
+          // counts nesnesi şuna benzeyecek: { 1: 42, 2: 159, 3: 24 ... }
+          setCategoryCounts(counts);
+        }
+      })
+      .catch((err) => console.error("Kategori sayıları alınamadı:", err));
+  }, []); // Sadece sayfa ilk açıldığında 1 kere çalışır
+
+  useEffect(() => {
+    const newParams = new URLSearchParams(window.location.search);
+    sort ? newParams.set("sort", sort) : newParams.delete("sort");
+    history.push({ search: newParams.toString() });
+  }, [sort, history]);
+
+  useEffect(() => {
+    dispatch(fetchProductLists(categoryId, sort));
+  }, [categoryId, dispatch, sort]);
 
   return (
     <div>
@@ -47,13 +78,18 @@ function ShopPage() {
               const currentGender = category.gender === "k" ? "kadin" : "erkek";
               const categorySubTitle = category.code.split(":")[1];
 
+              {
+                /*her kategorinin üzerine kendi totali gelecek*/
+              }
+              const currentCategoryCount = categoryCounts[category.id] || 0;
+
               return (
                 <CategoryCard
                   link={`/shop/${currentGender}/${categorySubTitle}/${category.id}`}
                   key={category.id}
                   bgImgUrl={category.img}
                   title={category.title}
-                  items={category.rating}
+                  items={currentCategoryCount}
                 />
               );
             })}
@@ -61,7 +97,14 @@ function ShopPage() {
       </div>
 
       <div className="px-10 sm:px-6 lg:px-10 xl:px-20">
-        <ViewAndFilterButtons />
+        <ViewAndFilterButtons
+          sort={sort}
+          setSort={setSort}
+          filter={filter}
+          setFilter={setFilter}
+          searchInputs={searchInputs}
+          setSearchInputs={setSearchInputs}
+        />
       </div>
 
       {/* ÜRÜNLER ALANI */}
@@ -77,8 +120,9 @@ function ShopPage() {
       {fetchState === "FETCHED" && (
         <div className="my-15 px-10 sm:px-6 lg:px-10 xl:px-20 max-w-7xl xl:mx-auto">
           <div className="flex flex-wrap gap-6">
-            {products.products?.map((product) => (
-              <div
+            {products.products?.map((product) => {
+
+              return (<div
                 key={product.id}
                 className="w-full 
                          sm:w-[calc(50%-12px)]
@@ -87,14 +131,18 @@ function ShopPage() {
               >
                 <ProductCard
                   id={product.id}
-                  bgImgUrl={product.images[0].url}
-                  title={product.title}
+                  bgImgUrl={product.images[0]?.url}
+                  title={product.name}
                   actualPrice={product.price}
                   salePrice={product.price}
-                  colors={colorsVariants}
+                  colorsVariants={colorsVariants}
+                  gender={gender} // ✅ yeni
+                  categoryName={categoryName} // ✅ yeni
+                  categoryId={categoryId} // ✅ yeni
                 />
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
