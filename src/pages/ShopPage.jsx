@@ -1,36 +1,62 @@
+import { useDispatch, useSelector } from "react-redux";
 import ProductCard from "../components/ProductCard";
 import { BrandsFav } from "../components/ShopComponents/BrandsFav";
 import { CategoryCard } from "../components/ShopComponents/CategoryCard";
 import { ViewAndFilterButtons } from "../components/ShopComponents/ViewAndFilterButtons";
-import { productsData } from "../data/products";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { fetchProductLists, setProductList } from "../store/actions/productActions";
 
 function ShopPage() {
-  
-  const category = [
-    { id: 1, img: "/card-item-1.png", title: "CLOTHES", items: "5" },
-    { id: 2, img: "/card-item-2.png", title: "CLOTHES", items: "5" },
-    { id: 3, img: "/card-item-3.png", title: "CLOTHES", items: "5" },
-    { id: 4, img: "/card-item-4.png", title: "CLOTHES", items: "5" },
-    { id: 5, img: "/card-item-5.png", title: "CLOTHES", items: "5" },
+  const categories = useSelector((store) => store.product.categories);
+  const products = useSelector((store) => store.product.productList);
+  const { gender, categoryName, categoryId } = useParams();
+   const dispatch = useDispatch();
+  const colorsVariants = [
+    "bg-amber-500",
+    "bg-blue-600",
+    "bg-green-400",
+    "bg-red-300",
   ];
- 
+  const totalProducts = useSelector((store) => store.product.total);
+  const fetchState = useSelector((store) => store.product.fetchState);//"FETCHING"
+  console.log("Toplam Ürün Adedi", totalProducts);
+
+  useEffect(()=>{
+     dispatch(fetchProductLists(categoryId));
+    
+  },[categoryId])
+
+
   return (
     <div>
-      {/* 
-        Dış boşlukları (Margin) kademeli yaptık:
-      */}
-      <div className="px-10 sm:px-6 lg:px-10 xl:px-20 py-8 w-full">
-       
-        <div className="flex flex-col sm:flex-row sm:flex-wrap xl:flex-nowrap gap-4 sm:gap-2 lg:gap-1.5">
-          {category.map((cat) => (
-            <div key={cat.id} className="flex-1 min-w-0">
-              <CategoryCard
-                bgImgUrl={cat.img}
-                title={cat.title}
-                items={cat.items}
-              />
-            </div>
-          ))}
+      {/* KATEGORİ ALANI */}
+      <div className="px-10 bg- sm:px-6 lg:px-10 xl:px-20 py-8 w-full max-w-7xl xl:mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-0">
+          {categories
+            .filter((category, index, currentArray) => {
+              return (
+                currentArray.findIndex(
+                  (item) => item.title === category.title,
+                ) === index
+              );
+            })
+            .sort((a, b) => b.rating - a.rating)
+            .slice(0, 5)
+            .map((category) => {
+              const currentGender = category.gender === "k" ? "kadin" : "erkek";
+              const categorySubTitle = category.code.split(":")[1];
+
+              return (
+                <CategoryCard
+                  link={`/shop/${currentGender}/${categorySubTitle}/${category.id}`}
+                  key={category.id}
+                  bgImgUrl={category.img}
+                  title={category.title}
+                  items={category.rating}
+                />
+              );
+            })}
         </div>
       </div>
 
@@ -39,28 +65,39 @@ function ShopPage() {
       </div>
 
       {/* ÜRÜNLER ALANI */}
-      <div className="my-15 px-10 sm:px-6 lg:px-10 xl:px-20 max-w-7xl xl:mx-auto">
-        <div className="flex flex-wrap gap-6">
-          {productsData.map((product) => (
-            <div
-              key={product.id}
-              className="w-full 
+      {fetchState === "FETCHING" && (
+        <div className="flex flex-col items-center justify-center min-h-[300px] w-full">
+          {/* Büyük ve şık bir Tailwind Spinner */}
+          <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-600"></div>
+          <p className="text-gray-500 mt-4 font-medium animate-pulse">
+            Ürünler hazırlanıyor, lütfen bekleyin...
+          </p>
+        </div>
+      )}
+      {fetchState === "FETCHED" && (
+        <div className="my-15 px-10 sm:px-6 lg:px-10 xl:px-20 max-w-7xl xl:mx-auto">
+          <div className="flex flex-wrap gap-6">
+            {products.products?.map((product) => (
+              <div
+                key={product.id}
+                className="w-full 
                          sm:w-[calc(50%-12px)]
                          md:w-[calc(33.33%-16px)] 
                          lg:w-[calc(25%-18px)]"
-            >
-              <ProductCard
-              id={product.id}
-                bgImgUrl={product.img}
-                title={product.title}
-                actualPrice={product.actualPrice}
-                salePrice={product.salePrice}
-                colors = {product.colors}
-              />
-            </div>
-          ))}
+              >
+                <ProductCard
+                  id={product.id}
+                  bgImgUrl={product.images[0].url}
+                  title={product.title}
+                  actualPrice={product.price}
+                  salePrice={product.price}
+                  colors={colorsVariants}
+                />
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Sayfalama */}
       <div className="flex justify-center items-center my-10 gap-1">
@@ -81,7 +118,7 @@ function ShopPage() {
         </button>
       </div>
       <div>
-        <BrandsFav/>
+        <BrandsFav />
       </div>
     </div>
   );

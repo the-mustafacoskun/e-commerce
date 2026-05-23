@@ -15,14 +15,16 @@ function ProductCard({ id,bgImgUrl, title, actualPrice, salePrice ,colors=[]}) {
         <h5>{title}</h5>
         <a className="link">English Department</a>
         <div className="flex gap-3">
-          <h5 className="text-muted">{actualPrice}</h5>
-          <h5 className="text-secondary-1">{salePrice}</h5>
+          <h5 className="text-muted">{`$${actualPrice}`}</h5>
+          <h5 className="text-secondary-1">{`$${salePrice}`}</h5>
         </div>
         <div className="flex gap-3" onClick={(e)=>e.stopPropagation()}>
           {colors.map((color,index)=>(
             <label key={index} className="flex items-center cursor-pointer">
-            <input type="radio" name="color" className="sr-only peer" />
-            <div className={`w-4 h-4 rounded-full bg-${color} peer-checked:ring-2 peer-checked:ring-offset-2 hover:scale-120 peer-checked:ring-primary transition-all`}></div>
+            <input type="radio" name={`color-${id}`} className="sr-only peer" />
+            <div
+              
+            className={`w-4 h-4 rounded-full ${color}  peer-checked:ring-2 peer-checked:ring-offset-2 hover:scale-120 peer-checked:ring-primary transition-all`}></div>
           </label>
           ))}
         </div>

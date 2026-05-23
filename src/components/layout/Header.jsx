@@ -1,4 +1,13 @@
-import { Heart, Menu, Search, ShoppingCart, UserRound, X } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  Heart,
+  Menu,
+  Search,
+  ShoppingCart,
+  UserRound,
+  X,
+} from "lucide-react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, NavLink, useLocation } from "react-router-dom";
@@ -7,8 +16,15 @@ function Header() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const location = useLocation();
-
+  const [shopDropDownOpen, setShopDropDownOpen] = useState(false);
   const user = useSelector((store) => store.client.user);
+
+  
+
+  const categories = useSelector((store) => store.product.categories);
+
+  
+  console.log(categories);
 
   return (
     <header className="w-full bg-white shadow-sm sticky top-0 z-50">
@@ -22,13 +38,13 @@ function Header() {
             <div className="flex items-center gap-4 lg:gap-20 flex-1">
               <div className="shrink-0">
                 <Link to="/">
-                  <h3 className="font-bold text-2xl text-text cursor-pointer">
+                  <h3 className="font-bold text-[16px] md:text-2xl text-text cursor-pointer">
                     Bandage
                   </h3>
                 </Link>
               </div>
 
-              {/* Masaüstü Menü: md:hidden yerine lg:flex yapıldı (1024px altında hamburger olacak) */}
+              {/* Masaüstü Menü: (1024px altında hamburger olacak) */}
               <nav className="hidden lg:flex gap-6 items-center">
                 <NavLink
                   exact
@@ -38,13 +54,91 @@ function Header() {
                 >
                   Home
                 </NavLink>
-                <NavLink
-                  to="/shop"
-                  className="font-link text-second-text hover:text-primary transition-colors whitespace-nowrap"
-                  activeClassName="text-primary font-bold"
-                >
-                  Shop
-                </NavLink>
+                <div className="relative w-full">
+                  <button
+                    className="flex font-link text-second-text hover:text-primary transition-colors whitespace-nowrap"
+                    onClick={() => setShopDropDownOpen(!shopDropDownOpen)}
+                  >
+                    Shop
+                    {!shopDropDownOpen ? <ChevronDown /> : <ChevronRight />}
+                  </button>
+                  {shopDropDownOpen && (
+                    <div className="absolute top-full grid grid-cols-2  gap-4 left-0 mt-2 w-100 bg-white shadow-lg p-4 z-50 rounded-md">
+                      {/* kadın erkek dışında kategory gelirse cocuk gibi burayı değiştir*/}
+                      <div className="flex flex-col gap-4">
+                        <h6>Kadın</h6>
+                        <div className="flex flex-col font-link text-second-text gap-4">
+                          {categories
+                            ?.filter(
+                              (categoryTitle) => categoryTitle.gender === "k",
+                            )
+                            .filter((category, index, currentArray) => {
+                              return (
+                                currentArray.findIndex(
+                                  (item) =>
+                                    item.title === category.title &&
+                                    item.gender === category.gender,
+                                ) === index
+                              );
+                            })
+                            .sort((a, b) => b.rating - a.rating)
+                            .map((category) => {
+                              const currentGender = "kadin";
+                              const categorySubTitle =
+                                category.code.split(":")[1];
+                              return (
+                                <Link
+                                  onClick={() =>
+                                    setShopDropDownOpen(!shopDropDownOpen)
+                                  }
+                                  key={category.id}
+                                  to={`/shop/${currentGender}/${categorySubTitle}/${category.id}`}
+                                >
+                                  {category.title}
+                                </Link>
+                              );
+                            })}
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-4">
+                        <h6>Erkek</h6>
+                        <div className="flex flex-col font-link text-second-text gap-4">
+                          {categories
+                            ?.filter(
+                              (categoryTitle) => categoryTitle.gender === "e",
+                            )
+                            .filter((category, index, currentArray) => {
+                              return (
+                                currentArray.findIndex(
+                                  (item) =>
+                                    item.title === category.title &&
+                                    item.gender === category.gender,
+                                ) === index
+                              );
+                            })
+                            .sort((a, b) => b.rating - a.rating)
+                            .map((category) => {
+                              const currentGender = "erkek";
+
+                              const categorySubTitle =
+                                category.code.split(":")[1];
+                              return (
+                                <Link
+                                  onClick={() =>
+                                    setShopDropDownOpen(!shopDropDownOpen)
+                                  }
+                                  key={category.id}
+                                  to={`/shop/${currentGender}/${categorySubTitle}/${category.id}`}
+                                >
+                                  {category.title}
+                                </Link>
+                              );
+                            })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 <NavLink
                   to="/about"
                   className="font-link text-second-text hover:text-primary transition-colors whitespace-nowrap"
@@ -77,10 +171,10 @@ function Header() {
             </div>
 
             {/* SAĞ GRUP */}
-            <div className="flex items-center gap-4 text-primary font-bold shrink-0 ml-4">
+            <div className="flex items-center gap-2 md:gap-4 text-primary font-bold shrink-0 ml-4">
               {/* Login/Register: lg:flex yapıldı */}
 
-              {user && user.avatarUrl &&user.token ? (
+              {user && user.avatarUrl && user.token ? (
                 <>
                   <span className="text-sm font-medium text-gray-700">
                     {user.name}
@@ -206,44 +300,44 @@ function Header() {
           >
             Pages
           </Link>
-          
-              {user && user.avatarUrl && user.token ? (
-                <div className="flex lg:hidden items-center gap-2">
-                  <span className="text-sm font-medium text-gray-700">
-                    {user.name}
-                  </span>
-                  <img
-                    src={user.avatarUrl}
-                    alt={user.name}
-                    className="w-9 h-9 rounded-full object-cover border border-gray-200"
-                  />
-                </div>
-              ) : (
-                 <div className="flex lg:hidden items-center gap-2 text-primary font-bold">
-                  <UserRound size={18} className="text-primary" />
-                  <Link
-                    to={{
-                      pathname: "/login",
-                      state: { from: location.pathname },
-                    }}
-                  >
-                    <button className="text-primary cursor-pointer hover:opacity-80 whitespace-nowrap">
-                      Login
-                    </button>
-                  </Link>
-                  <span className="text-primary">/</span>
-                  <Link
-                    to={{
-                      pathname: "/signup",
-                      state: { from: location.pathname },
-                    }}
-                  >
-                    <button className="text-primary cursor-pointer hover:opacity-80 whitespace-nowrap">
-                      Register
-                    </button>
-                  </Link>
-                </div>
-              )}
+
+          {user && user.avatarUrl && user.token ? (
+            <div className="flex lg:hidden items-center gap-2">
+              <span className="text-sm font-medium text-gray-700">
+                {user.name}
+              </span>
+              <img
+                src={user.avatarUrl}
+                alt={user.name}
+                className="w-4 h-4 rounded-full object-cover border border-gray-200"
+              />
+            </div>
+          ) : (
+            <div className="flex lg:hidden items-center gap-2 text-primary font-bold">
+              <UserRound size={18} className="text-primary" />
+              <Link
+                to={{
+                  pathname: "/login",
+                  state: { from: location.pathname },
+                }}
+              >
+                <button className="text-primary cursor-pointer hover:opacity-80 whitespace-nowrap">
+                  Login
+                </button>
+              </Link>
+              <span className="text-primary">/</span>
+              <Link
+                to={{
+                  pathname: "/signup",
+                  state: { from: location.pathname },
+                }}
+              >
+                <button className="text-primary cursor-pointer hover:opacity-80 whitespace-nowrap">
+                  Register
+                </button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </header>

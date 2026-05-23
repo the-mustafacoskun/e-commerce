@@ -5,7 +5,7 @@ import Header from './Header'
 function MainLayout({children}) {
   return (
     <div className='[&>*:nth-child(even)]:bg-[#F9F9F9] [&>*:nth-child(odd)]:bg-white'>
-        <AnnouncementBar/>
+        
         <Header/>
         <main>
         {children}

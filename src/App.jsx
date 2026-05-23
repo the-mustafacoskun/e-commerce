@@ -1,4 +1,4 @@
-import {  Switch, Route } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import MainLayout from "./components/layout/MainLayout";
 import MainPage from "./pages/MainPage";
 import ShopPage from "./pages/ShopPage";
@@ -14,42 +14,40 @@ import { useEffect } from "react";
 
 import { useDispatch } from "react-redux";
 import { verifyUser } from "./store/actions/clientActions";
+import { fetchCategories } from "./store/actions/productActions";
 
 function App() {
-const dispatch = useDispatch();
-  useEffect(()=>{
-    if(!localStorage.getItem('token')){
-      return
+  const dispatch = useDispatch();
+  useEffect(() => {
+    
+     dispatch(fetchCategories());
+    
+    if (!localStorage.getItem("token")) {
+      return;
     }
     dispatch(verifyUser());
-
-  },[]);
-
-
-
+   
+  }, []);
 
   return (
-    
-      <MainLayout>
-        <Switch>
-          <Route exact path="/" component={MainPage} />
-          <Route path="/shop" component={ShopPage} />
-          <Route
-            exact
-            path="/productDetails/:id"
-            component={ProductDetailsPage}
-          />
-          <Route path="/contact" component={ContactPage} />
-          <Route path="/pages" component={PagesPage} />
-          <Route path="/blog" component={BlogPage} />
-          <Route path="/team" component={TeamPage} />
-          <Route path="/about" component={AboutPage} />
-          <Route path="/signup" component={SignUp} />
-           <Route path="/login" component={LoginPage} />
-        </Switch>
-       
-      </MainLayout>
-  
+    <MainLayout>
+      <Switch>
+        <Route exact path="/" component={MainPage} />
+        <Route path="/shop/:gender?/:categoryName?/:categoryId?" component={ShopPage} />
+        <Route
+          exact
+          path="/productDetails/:id"
+          component={ProductDetailsPage}
+        />
+        <Route path="/contact" component={ContactPage} />
+        <Route path="/pages" component={PagesPage} />
+        <Route path="/blog" component={BlogPage} />
+        <Route path="/team" component={TeamPage} />
+        <Route path="/about" component={AboutPage} />
+        <Route path="/signup" component={SignUp} />
+        <Route path="/login" component={LoginPage} />
+      </Switch>
+    </MainLayout>
   );
 }
 
