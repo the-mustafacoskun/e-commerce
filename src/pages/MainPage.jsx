@@ -1,3 +1,4 @@
+import { useDispatch, useSelector } from "react-redux";
 import { BlogCard } from "../components/BlogCard";
 import { Carousel } from "../components/Carousel";
 import { Container } from "../components/Container";
@@ -5,7 +6,9 @@ import { HalfSubCategoryCard } from "../components/HalfSubCategoryCard";
 import Hero from "../components/Hero";
 import ProductCard from "../components/ProductCard";
 import { SubCategoryCard } from "../components/SubCategoryCard";
-import { productsData } from "../data/products";
+import { useEffect } from "react";
+import { fetchProductLists } from "../store/actions/productActions";
+
 
 export default function MainPage() {
    const colorsVariants = [
@@ -14,6 +17,15 @@ export default function MainPage() {
     "bg-green-400",
     "bg-red-300",
   ];
+const products = useSelector((store)=>store.product.productList);
+const dispatch = useDispatch();
+useEffect(() => {
+  
+   
+    if (!products || !products.products || products.products.length === 0) {
+      dispatch(fetchProductLists(undefined, "rating:desc")); // Thunk aksiyonunuzu tetikliyoruz
+    }
+  }, [dispatch, products]);
 
   return (
     <div className="w-full">
@@ -66,17 +78,17 @@ export default function MainPage() {
 
         {/* Düzenlenen Kısım: Map fonksiyonu doğrudan ana flex kapsayıcısına uygulandı */}
         <div className="flex flex-wrap justify-center gap-7.5">
-          {productsData.map((product) => (
+          {products?.products?.map((product) => (
             <div
               key={product.id}
               className="w-full sm:w-[calc(50%-15px)] md:w-[calc(33.33%-20px)] lg:w-[calc(25%-23px)]"
             >
               <ProductCard
-                id={product.id} // Tıklama yönlendirmesi için ID şart
-                bgImgUrl={product.img}
-                title={product.title}
-                actualPrice={product.actualPrice} // data dosyasındaki isimlendirmeyle eşitlendi
-                salePrice={product.salePrice}
+                id={product.id} 
+                bgImgUrl={product.images[0].url}
+                title={product.name}
+                actualPrice={product.price}
+                salePrice={product.price}
                 colorsVariants={colorsVariants}
               />
             </div>

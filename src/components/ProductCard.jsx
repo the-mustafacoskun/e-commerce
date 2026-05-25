@@ -1,7 +1,20 @@
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
-function ProductCard({ id,bgImgUrl, title, actualPrice, salePrice ,colorsVariants,gender, categoryName, categoryId}) {
+function ProductCard({ id,bgImgUrl, title, actualPrice, salePrice ,colorsVariants, categoryId}) {
   const history =useHistory()
+  // 1. Redux store'dan tüm kategorileri çekiyoruz
+  const categories = useSelector((store) => store.product.categories);
+  
+  // 2. Ürünün categoryId'sine sahip olan kategoriyi buluyoruz
+  const currentCategory = categories?.find(cat => cat.id === categoryId);
+  
+  // 3. Kategoriden cinsiyet metnini ("kadin" veya "erkek") türetiyoruz
+  const gender = currentCategory?.gender === "k" ? "kadin" : "erkek";
+  
+  // 4. "k:tisort" veya "e:ayakkabı" formatındaki code alanından kategori adını ayıklıyoruz
+  // Eğer kategori henüz yüklenmediyse kırılmasın diye fallback olarak "urun" veriyoruz
+  const categoryName = currentCategory?.code ? currentCategory.code.split(":")[1] : "urun";
  
  const nameSlug = title?.toLowerCase().replace(/\s+/g, "-");
  

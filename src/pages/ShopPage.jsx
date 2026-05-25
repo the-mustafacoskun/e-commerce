@@ -134,8 +134,8 @@ function ShopPage() {
                   actualPrice={product.price}
                   salePrice={product.price}
                   colorsVariants={colorsVariants}
-                  gender={gender} 
-                  categoryName={categoryName} 
+                  
+                 
                   categoryId={categoryId} 
                 />
               </div>
