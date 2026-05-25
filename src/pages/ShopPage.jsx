@@ -6,6 +6,7 @@ import { ViewAndFilterButtons } from "../components/ShopComponents/ViewAndFilter
 import { useParams, useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { fetchProductLists } from "../store/actions/productActions";
+import { api } from "../api";
 
 function ShopPage() {
   const categories = useSelector((store) => store.product.categories);
@@ -18,27 +19,27 @@ function ShopPage() {
     "bg-green-400",
     "bg-red-300",
   ];
+  // eslint-disable-next-line no-unused-vars
   const totalProducts = useSelector((store) => store.product.total);
   const fetchState = useSelector((store) => store.product.fetchState); //"FETCHING"
 
   const [sort, setSort] = useState("");
+  {/*filteri searchInput u prop olarak gönder ama öncesinde bak storedan göndermeye*/}
   const [filter, setFilter] = useState("");
   const [searchInputs, setSearchInputs] = useState("");
   const history = useHistory();
   // 💡 HAKİKİ ÇÖZÜM BURASI: Her kategorinin toplam ürün adedini tutacağımız yer
-  const [categoryCounts, setCategoryCounts] = useState({});
+ 
+ const [categoryCounts, setCategoryCounts] = useState({});
 
-  // 1. ADIM: Sayfa ilk açıldığında API'den tüm ürünlerin sayılarını öğrenmek için arka planda bir tarama yapıyoruz
-  useEffect(() => {
-    // Projedeki tüm ürünleri (limit vermeden veya yüksek bir limit vererek) sorguluyoruz
-    // Workintech API standartlarında `limit=1000` veya parametresiz istek tüm ürün adetlerini kategorize etmemizi sağlar
-    fetch("https://workintech-fe-ecommerce.onrender.com/products?limit=1000")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data && data.products) {
+   useEffect(() => {
+    
+    
+    api.get("/products").then((response) => {
+        if (response.data && response.data.products) {
           // Ürünleri kategorilerine göre gruplayıp sayıyoruz
           const counts = {};
-          data.products.forEach((product) => {
+          response.data.products.forEach((product) => {
             const catId = product.category_id;
             counts[catId] = (counts[catId] || 0) + 1;
           });
@@ -57,12 +58,12 @@ function ShopPage() {
 
   useEffect(() => {
     dispatch(fetchProductLists(categoryId, sort));
-  }, [categoryId, dispatch, sort]);
+  }, [categoryId, sort]);
 
   return (
     <div>
       {/* KATEGORİ ALANI */}
-      <div className="px-10 bg- sm:px-6 lg:px-10 xl:px-20 py-8 w-full max-w-7xl xl:mx-auto">
+      <div className="px-10 b sm:px-6 lg:px-10 xl:px-20 py-8 w-full max-w-7xl xl:mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-0">
           {categories
             .filter((category, index, currentArray) => {
@@ -100,16 +101,13 @@ function ShopPage() {
         <ViewAndFilterButtons
           sort={sort}
           setSort={setSort}
-          filter={filter}
-          setFilter={setFilter}
-          searchInputs={searchInputs}
-          setSearchInputs={setSearchInputs}
+         
         />
       </div>
 
       {/* ÜRÜNLER ALANI */}
       {fetchState === "FETCHING" && (
-        <div className="flex flex-col items-center justify-center min-h-[300px] w-full">
+        <div className="flex flex-col items-center justify-center min-h-75 w-full">
           {/* Büyük ve şık bir Tailwind Spinner */}
           <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-600"></div>
           <p className="text-gray-500 mt-4 font-medium animate-pulse">
@@ -136,9 +134,9 @@ function ShopPage() {
                   actualPrice={product.price}
                   salePrice={product.price}
                   colorsVariants={colorsVariants}
-                  gender={gender} // ✅ yeni
-                  categoryName={categoryName} // ✅ yeni
-                  categoryId={categoryId} // ✅ yeni
+                  gender={gender} 
+                  categoryName={categoryName} 
+                  categoryId={categoryId} 
                 />
               </div>
               );

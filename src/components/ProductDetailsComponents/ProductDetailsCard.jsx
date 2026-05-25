@@ -82,7 +82,7 @@ export function ProductDetailsCard() {
             <h4>{product.name}</h4>
             <div className="flex gap-3">
               {/*Filling stars*/}
-              <div className="flex">
+              <div className="flex gap-0 m-0 p-0">
                 {Array.from({ length: 5 }).map((_, index) => {
                   const fillNumber = Math.floor(product.rating) > index;
                   const partialFillNumber = (product.rating - index) * 100;

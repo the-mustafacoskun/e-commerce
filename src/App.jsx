@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { verifyUser } from "./store/actions/clientActions";
 import { fetchCategories } from "./store/actions/productActions";
+import Filter from "./components/Filter";
 
 function App() {
   const dispatch = useDispatch();
@@ -45,6 +46,7 @@ function App() {
           path="/products/:productId"
           component={ProductDetailsPage}
         />
+        <Route path='/filter' component={Filter}/>
         <Route path="/contact" component={ContactPage} />
         <Route path="/pages" component={PagesPage} />
         <Route path="/blog" component={BlogPage} />

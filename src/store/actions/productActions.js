@@ -13,8 +13,8 @@ export const setFilter = (filter) => ({ type: SET_FILTER, payload: filter })
 
 
 export const fetchCategories = () => {
-    return (dispatch, getState) => {
-        const state = getState();
+    return (dispatch) => {
+        
         api.get('/categories').then((response) => {
             dispatch(setCategories(response.data))
 
