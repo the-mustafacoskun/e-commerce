@@ -3,10 +3,7 @@ import { useState } from "react";
 import Filter from "../Filter";
 
 export const ViewAndFilterButtons = ({
-  setSearchInputs,
-  searchInputs,
-  setFilter,
-  filter,
+  onPriceFilter,
   setSort,
   sort,
 }) => {
@@ -54,7 +51,7 @@ export const ViewAndFilterButtons = ({
         </div>
       </div>
       { (<div className={`transition-all duration-500 ease-in-out ${filterMenuOpen?'opacity-100 max-h-full visible':'max-h-0 opacity-0 invisible overflow-hidden'}`}>
-        <Filter />
+        <Filter onPriceFilter={onPriceFilter} />
       </div>)}
     </div>
   );

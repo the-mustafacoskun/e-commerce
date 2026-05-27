@@ -5,13 +5,23 @@ import { CategoryCard } from "../components/ShopComponents/CategoryCard";
 import { ViewAndFilterButtons } from "../components/ShopComponents/ViewAndFilterButtons";
 import { useParams, useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { fetchProductLists } from "../store/actions/productActions";
+import {
+  fetchProductLists,
+  setFilter,
+  setOffset,
+} from "../store/actions/productActions";
 import { api } from "../api";
 
 function ShopPage() {
   const categories = useSelector((store) => store.product.categories);
   const products = useSelector((store) => store.product.productList);
-  const { gender,categoryName,categoryId } = useParams();
+  const limit = useSelector((store) => store.product.limit);
+  const offset = useSelector((store) => store.product.offset);
+  const total = useSelector((store) => store.product.total);
+
+  const totalPage = Math.ceil(Number(total) / Number(limit));
+
+  const { categoryId } = useParams();
   const dispatch = useDispatch();
   const colorsVariants = [
     "bg-amber-500",
@@ -22,20 +32,21 @@ function ShopPage() {
   // eslint-disable-next-line no-unused-vars
   const totalProducts = useSelector((store) => store.product.total);
   const fetchState = useSelector((store) => store.product.fetchState); //"FETCHING"
-
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 2000 });
   const [sort, setSort] = useState("");
-  {/*filteri searchInput u prop olarak gönder ama öncesinde bak storedan göndermeye*/}
-  const [filter, setFilter] = useState("");
-  const [searchInputs, setSearchInputs] = useState("");
+  {
+    /*filteri searchInput u prop olarak gönder ama öncesinde bak storedan göndermeye*/
+  }
+  const currenFilter = useSelector((store) => store.product.filter);
   const history = useHistory();
   // 💡 HAKİKİ ÇÖZÜM BURASI: Her kategorinin toplam ürün adedini tutacağımız yer
- 
- const [categoryCounts, setCategoryCounts] = useState({});
 
-   useEffect(() => {
-    
-    
-    api.get("/products").then((response) => {
+  const [categoryCounts, setCategoryCounts] = useState({});
+
+  useEffect(() => {
+    api
+      .get("/products")
+      .then((response) => {
         if (response.data && response.data.products) {
           // Ürünleri kategorilerine göre gruplayıp sayıyoruz
           const counts = {};
@@ -43,22 +54,31 @@ function ShopPage() {
             const catId = product.category_id;
             counts[catId] = (counts[catId] || 0) + 1;
           });
-          // counts nesnesi şuna benzeyecek: { 1: 42, 2: 159, 3: 24 ... }
+
           setCategoryCounts(counts);
         }
       })
       .catch((err) => console.error("Kategori sayıları alınamadı:", err));
-  }, []); // Sadece sayfa ilk açıldığında 1 kere çalışır
+  }, []);
 
   useEffect(() => {
     const newParams = new URLSearchParams(window.location.search);
+    currenFilter
+      ? newParams.set("filter", currenFilter)
+      : newParams.delete("filter");
     sort ? newParams.set("sort", sort) : newParams.delete("sort");
+    limit?newParams.set("limit", limit) : newParams.delete("limit");
+    offset?newParams.set("offset", offset) : newParams.delete("offset");
     history.push({ search: newParams.toString() });
-  }, [sort, history]);
+  }, [sort, currenFilter, history,limit,offset]);
 
   useEffect(() => {
-    dispatch(fetchProductLists(categoryId, sort));
-  }, [categoryId, sort]);
+    dispatch(fetchProductLists(categoryId, sort, currenFilter));
+  }, [categoryId, sort, currenFilter, offset]);
+  useEffect(() => {
+    dispatch(setFilter("")); // kategori değişince filter ı sıfırla
+    dispatch(setOffset(0));
+  }, [categoryId]);
 
   return (
     <div>
@@ -101,7 +121,7 @@ function ShopPage() {
         <ViewAndFilterButtons
           sort={sort}
           setSort={setSort}
-         
+          onPriceFilter={(min, max) => setPriceRange({ min, max })}
         />
       </div>
 
@@ -118,48 +138,61 @@ function ShopPage() {
       {fetchState === "FETCHED" && (
         <div className="my-15 px-10 sm:px-6 lg:px-10 xl:px-20 max-w-7xl xl:mx-auto">
           <div className="flex flex-wrap gap-6">
-            {products.products?.map((product) => {
-
-              return (<div
-                key={product.id}
-                className="w-full 
+            {products.products
+              ?.filter(
+                (p) => p.price >= priceRange.min && p.price <= priceRange.max,
+              )
+              .map((product) => {
+                return (
+                  <div
+                    key={product.id}
+                    className="w-full 
                          sm:w-[calc(50%-12px)]
                          md:w-[calc(33.33%-16px)] 
                          lg:w-[calc(25%-18px)]"
-              >
-                <ProductCard
-                  id={product.id}
-                  bgImgUrl={product.images[0]?.url}
-                  title={product.name}
-                  actualPrice={product.price}
-                  salePrice={product.price}
-                  colorsVariants={colorsVariants}
-                  
-                 
-                  categoryId={categoryId} 
-                />
-              </div>
-              );
-            })}
+                  >
+                    <ProductCard
+                      id={product.id}
+                      bgImgUrl={product.images[0]?.url}
+                      title={product.name}
+                      actualPrice={product.price}
+                      salePrice={product.price}
+                      colorsVariants={colorsVariants}
+                      categoryId={product.category_id}
+                    />
+                  </div>
+                );
+              })}
           </div>
         </div>
       )}
 
       {/* Sayfalama */}
       <div className="flex justify-center items-center my-10 gap-1">
-        <button className="px-4 py-3 sm:px-6.25 sm:py-6.25 bg-[#F3F3F3]  hover:bg-[#DDDDDD] border border-neutral-200/80 text-neutral-600 rounded-l-sm cursor-pointer text-sm sm:text-base">
+        <button
+          onClick={() => dispatch(setOffset(0))}
+          className="px-4 py-3 sm:px-6.25 sm:py-6.25 bg-[#F3F3F3]  hover:bg-[#DDDDDD] border border-neutral-200/80 text-neutral-600 rounded-l-sm cursor-pointer text-sm sm:text-base"
+        >
           First
         </button>
-        <button className="px-3 py-3 sm:py-6.25 sm:px-5 text-primary-text hover:scale-120 bg-white border border-neutral-200/80 cursor-pointer text-sm sm:text-base">
-          1
-        </button>
-        <button className="px-3 py-3 sm:py-6.25 sm:px-5 text-primary-text hover:scale-120 bg-white border border-neutral-200/80 cursor-pointer text-sm sm:text-base">
-          2
-        </button>
-        <button className="px-3 py-3 sm:py-6.25 sm:px-5 text-primary-text hover:scale-120 bg-white border border-neutral-200/80 cursor-pointer text-sm sm:text-base">
-          3
-        </button>
-        <button className="px-4 py-3 sm:px-6.25 sm:py-6.25 bg-primary  hover:bg-hover text-white border border-neutral-200/80 rounded-r-sm cursor-pointer text-sm sm:text-base">
+        {Array.from({ length: totalPage }).map((_, index) => {
+          const isCurrentPage = offset ===index*limit
+          return (
+            <button
+            key={index}
+              onClick={() => dispatch(setOffset(index * limit))}
+              className={`px-3 py-3 sm:py-6.25 sm:px-5  hover:scale-120 ${isCurrentPage?'bg-primary text-light-text': 'bg-white text-primary-text'}  border border-neutral-200/80 cursor-pointer text-sm sm:text-base`}
+            >
+              {index + 1}
+            </button>
+          );
+        })}
+
+        <button
+          disabled={offset+limit>total}
+          onClick={() => dispatch(setOffset(offset + limit))}
+          className={`px-4 py-3 sm:px-6.25 sm:py-6.25 ${offset+limit>total ? 'bg-[#F3F3F3] text-neutral-600':'bg-white  text-primary'}   hover:bg-hover border border-neutral-200/80 rounded-r-sm cursor-pointer text-sm sm:text-base`}
+        >
           Next
         </button>
       </div>

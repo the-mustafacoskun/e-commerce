@@ -7,6 +7,7 @@ function ProductDetailsPage() {
   return (
     <div>
       <ProductDetailsCard />
+      
       <BestSellerCard />
       <BrandsFav/>
     </div>

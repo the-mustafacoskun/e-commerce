@@ -7,7 +7,7 @@ function ProductCard({ id,bgImgUrl, title, actualPrice, salePrice ,colorsVariant
   const categories = useSelector((store) => store.product.categories);
   
   // 2. Ürünün categoryId'sine sahip olan kategoriyi buluyoruz
-  const currentCategory = categories?.find(cat => cat.id === categoryId);
+  const currentCategory = categories?.find(cat => Number(cat.id) === Number(categoryId));
   
   // 3. Kategoriden cinsiyet metnini ("kadin" veya "erkek") türetiyoruz
   const gender = currentCategory?.gender === "k" ? "kadin" : "erkek";

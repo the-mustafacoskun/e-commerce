@@ -9,8 +9,10 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, NavLink, useLocation,useHistory } from "react-router-dom";
+import { setFilter } from "../../store/actions/productActions";
+
 
 function Header() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -19,11 +21,23 @@ function Header() {
   const [shopDropDownOpen, setShopDropDownOpen] = useState(false);
   const user = useSelector((store) => store.client.user);
 
+const history =useHistory();
   
 
   const categories = useSelector((store) => store.product.categories);
+  const dispatch = useDispatch();
+  const currenFilter = useSelector((store)=>store.product.filter)
 
-
+  const handleInputChange =(e)=>{
+     dispatch(setFilter(e.target.value))
+  }
+  const handleSearchSubmit=(e)=>{
+   e.preventDefault();
+   setIsSearchOpen(false);
+    if(!location.pathname.startsWith("/shop")){
+      history.push("/shop");
+    }
+  }
 
   return (
     <header className="w-full bg-white shadow-sm sticky top-0 z-50">
@@ -242,15 +256,18 @@ function Header() {
           </div>
 
           {/* Arama Çubuğu */}
-          <div
+          <form
+            onSubmit={handleSearchSubmit}
             className={`w-full overflow-hidden transition-all duration-300 ${isSearchOpen ? "max-h-20 opacity-100 mt-2" : "max-h-0 opacity-0"}`}
           >
             <input
+              value={currenFilter}
+              onChange={handleInputChange}
               type="text"
               placeholder="Search..."
               className="bg-primary/10 w-full rounded-full px-4 h-10 outline-none border border-transparent focus:border-primary/30"
             />
-          </div>
+          </form>
         </div>
 
         {/* Mobil Menü: lg kırılmasında gizlenecek */}

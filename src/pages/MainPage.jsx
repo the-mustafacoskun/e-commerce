@@ -22,7 +22,7 @@ const dispatch = useDispatch();
 useEffect(() => {
   
    
-    if (!products || !products.products || products.products.length === 0) {
+    if (Array.isArray(products) || !products || !products.products || products.products.length === 0) {
       dispatch(fetchProductLists(undefined, "rating:desc")); // Thunk aksiyonunuzu tetikliyoruz
     }
   }, [dispatch, products]);
@@ -76,20 +76,21 @@ useEffect(() => {
           </p>
         </div>
 
-        {/* Düzenlenen Kısım: Map fonksiyonu doğrudan ana flex kapsayıcısına uygulandı */}
+        
         <div className="flex flex-wrap justify-center gap-7.5">
-          {products?.products?.map((product) => (
+          {!Array.isArray(products) && products?.products?.slice(0,8).map((product) => (
             <div
               key={product.id}
               className="w-full sm:w-[calc(50%-15px)] md:w-[calc(33.33%-20px)] lg:w-[calc(25%-23px)]"
             >
               <ProductCard
                 id={product.id} 
-                bgImgUrl={product.images[0].url}
+                bgImgUrl={product?.images?.[0]?.url}
                 title={product.name}
                 actualPrice={product.price}
                 salePrice={product.price}
                 colorsVariants={colorsVariants}
+                categoryId={product.category_id}
               />
             </div>
           ))}

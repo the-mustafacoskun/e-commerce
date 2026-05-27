@@ -14,7 +14,7 @@ export const setFilter = (filter) => ({ type: SET_FILTER, payload: filter })
 
 export const fetchCategories = () => {
     return (dispatch) => {
-        
+
         api.get('/categories').then((response) => {
             dispatch(setCategories(response.data))
 
@@ -27,7 +27,7 @@ export const fetchCategories = () => {
 export const fetchProductLists = (categoryId, sort) => {
     return (dispatch, getState) => {
 
-        const { filter } = getState().product;
+        const { filter, offset, limit } = getState().product;
         const params = new URLSearchParams();
         if (categoryId) {
             params.append('category', categoryId)
@@ -37,6 +37,12 @@ export const fetchProductLists = (categoryId, sort) => {
         }
         if (filter) {
             params.append('filter', filter)
+        }
+        if (limit) {
+            params.append('limit', limit)
+        }
+        if (offset) {
+            params.append('offset', offset)
         }
         const queryString = params.toString();
 
@@ -50,6 +56,20 @@ export const fetchProductLists = (categoryId, sort) => {
             dispatch(setFetchState('FETCHED'))
             dispatch(setTotal(response.data.total))
 
+
+        }).catch((error) => {
+            dispatch(setFetchState('FAILED'));
+            console.error('Ürünleri Çekerken Hata Oluştu', error)
+        })
+    }
+}
+export const fetchProductDetails = (productId) => {
+    return (dispatch) => {
+        dispatch(setFetchState('FETCHING'));
+
+        api.get(`/products/${productId}`).then((response) => {
+            dispatch(setProductList([response.data]))
+            dispatch(setFetchState('FETCHED'))
         }).catch((error) => {
             dispatch(setFetchState('FAILED'));
             console.error('Ürünleri Çekerken Hata Oluştu', error)

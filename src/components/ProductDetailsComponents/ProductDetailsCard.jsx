@@ -8,16 +8,26 @@ import {
 } from "lucide-react";
 import { useParams, Link } from "react-router-dom";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import {
+  fetchCategories,
+  fetchProductDetails,
+} from "../../store/actions/productActions";
+import { useHistory } from "react-router-dom";
 
 export function ProductDetailsCard() {
   const { productId } = useParams();
-
+  const dispatch = useDispatch();
+  const history = useHistory();
   const productsData = useSelector((store) => store.product.productList);
-  const products = productsData?.products || [];
-  const product = productsData?.products?.find(
-    (item) => item.id === Number(productId),
-  );
+  const categories = useSelector((store) => store.product.categories);
+
+  const product = Array.isArray(productsData)
+    ? productsData.find((item) => Number(item.id) === Number(productId))
+    : productsData?.products?.find(
+        (item) => Number(item.id) === Number(productId),
+      ) || (productsData?.id === Number(productId) ? productsData : null);
   const fetchState = useSelector((store) => store.product.fetchState);
   const colorsVariants = [
     "bg-amber-500",
@@ -25,26 +35,45 @@ export function ProductDetailsCard() {
     "bg-green-400",
     "bg-red-300",
   ];
-  if (fetchState === "FETCHING" || (!product && products.length === 0)) {
+  useEffect(() => {
+    if (categories.length === 0) {
+      dispatch(fetchCategories());
+    }
+    dispatch(fetchProductDetails(productId));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, productId]);
+
+  if (fetchState === "FETCHING" || !product) {
+    // Eğer istek bittiyse (FETCHING değilse) ve hala ürün yoksa aşağıda "Bulunamadı" basacak.
+    if (fetchState !== "FETCHING" && fetchState !== "IDLE" && !product) {
+      return (
+        <div className="py-12 text-center text-danger-text font-bold">
+          Ürün bulunamadı!
+        </div>
+      );
+    }
+
+    // İstek devam ederken ya da ilk yüklenme anında render edilecek alan:
     return (
       <div className="py-12 text-center text-primary font-bold text-lg animate-pulse">
         Ürün detayları yükleniyor...
       </div>
     );
   }
-
-  if (!product) {
-    return (
-      <div className="py-12 text-center text-danger-text font-bold">
-        Product not found!
-      </div>
-    );
-  }
-
   return (
     <div className="w-full [&>div:nth-child(even)]:bg-light-bg flex flex-col">
       {/* 1. ÇOCUK: ÜRÜN ANA KARTI */}
-      <div className="w-full py-8">
+
+      <div className="relative w-full flex flex-col py-8">
+        <div
+          onClick={() => history.goBack()}
+          className="absolute top-0  z-20 mb-6 hover:cursor-pointer text-primary flex items-center hover:scale-110"
+        >
+          <button>
+            <ChevronLeft className="w-8 h-8 ml-10 " />
+          </button>
+          <span>Back</span>
+        </div>
         <div className="px-10 sm:px-6 lg:px-10 xl:px-20 flex flex-col md:flex-row md:gap-7.5 max-w-7xl xl:mx-auto">
           {/* Sol Kolon: Görseller */}
           <div className="flex flex-col gap-5 flex-1">
@@ -88,18 +117,20 @@ export function ProductDetailsCard() {
                   const partialFillNumber = (product.rating - index) * 100;
                   return (
                     <div className="relative" key={index}>
-                      {index===Math.floor(product.rating)&&(<div
-                        style={{ width: `${partialFillNumber}%`,whiteSpace: "nowrap" }}
-                        className={`absolute top-0 left-0   overflow-hidden`}
-                      >
-                        <Star
-                         className="text-amber-400 " fill="gold" 
-                        />
-                      </div>)}
-                      <Star 
-                      
-                       className=" text-amber-400"
-                          fill={`${fillNumber ? "gold" : "white"}`}
+                      {index === Math.floor(product.rating) && (
+                        <div
+                          style={{
+                            width: `${partialFillNumber}%`,
+                            whiteSpace: "nowrap",
+                          }}
+                          className={`absolute top-0 left-0   overflow-hidden`}
+                        >
+                          <Star className="text-amber-400 " fill="gold" />
+                        </div>
+                      )}
+                      <Star
+                        className=" text-amber-400"
+                        fill={`${fillNumber ? "gold" : "white"}`}
                       />
                     </div>
                   );
@@ -177,7 +208,7 @@ export function ProductDetailsCard() {
               <div className="relative w-fit h-fit overflow-visible group">
                 <div className="absolute inset-0 bg-[#252B42]/15 rounded-lg translate-x-3 translate-y-3 z-0 transition-transform group-hover:translate-x-4 group-hover:translate-y-4" />
                 <img
-                  src={product.images[0]?.url}
+                  src={product?.images[0]?.url}
                   className="w-full max-h-100 object-cover rounded-lg z-10 relative block border border-gray-100"
                   alt="Product Detail"
                 />
