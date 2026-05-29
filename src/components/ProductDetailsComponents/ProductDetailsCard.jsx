@@ -8,61 +8,63 @@ import {
 } from "lucide-react";
 import { useParams, Link } from "react-router-dom";
 
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import {
-  fetchCategories,
-  fetchProductDetails,
-} from "../../store/actions/productActions";
+import { useEffect, useState } from "react";
+
 import { useHistory } from "react-router-dom";
+import { api } from "../../api";
+import { setCart } from "../../store/actions/shoppingCartActions";
+import { useDispatch } from "react-redux";
 
 export function ProductDetailsCard() {
-  const { productId } = useParams();
-  const dispatch = useDispatch();
+ 
+const colorsVariants = [
+  "bg-amber-500",
+  "bg-blue-600",
+  "bg-green-400",
+  "bg-red-300",
+];
   const history = useHistory();
-  const productsData = useSelector((store) => store.product.productList);
-  const categories = useSelector((store) => store.product.categories);
+    const { productId } = useParams();
+const dispatch = useDispatch()
+const hadleAddCart =(product)=>{
+  const formatedProduct ={count:1 ,checked:true , product:product}
+  dispatch(setCart(formatedProduct));
+   
+}
+ const [state, setState] = useState({
+  product: null,
+  loading: true,
+  error: null,
+});
 
-  const product = Array.isArray(productsData)
-    ? productsData.find((item) => Number(item.id) === Number(productId))
-    : productsData?.products?.find(
-        (item) => Number(item.id) === Number(productId),
-      ) || (productsData?.id === Number(productId) ? productsData : null);
-  const fetchState = useSelector((store) => store.product.fetchState);
-  const colorsVariants = [
-    "bg-amber-500",
-    "bg-blue-600",
-    "bg-green-400",
-    "bg-red-300",
-  ];
-  useEffect(() => {
-    if (categories.length === 0) {
-      dispatch(fetchCategories());
-    }
-    dispatch(fetchProductDetails(productId));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, productId]);
+useEffect(() => {
+  api.get(`/products/${productId}`)
+    .then((res) => {
+      setState({ product: res.data, loading: false, error: null });
+    })
+    .catch((err) => {
+      setState({ product: null, loading: false, error: err.response?.status || err.message });
+    });
+}, [productId]);
 
-  if (fetchState === "FETCHING" || !product) {
-    // Eğer istek bittiyse (FETCHING değilse) ve hala ürün yoksa aşağıda "Bulunamadı" basacak.
-    if (fetchState !== "FETCHING" && fetchState !== "IDLE" && !product) {
-      return (
-        <div className="py-12 text-center text-danger-text font-bold">
-          Ürün bulunamadı!
-        </div>
-      );
-    }
+const { product, loading, error } = state;
 
-    // İstek devam ederken ya da ilk yüklenme anında render edilecek alan:
-    return (
-      <div className="py-12 text-center text-primary font-bold text-lg animate-pulse">
-        Ürün detayları yükleniyor...
-      </div>
-    );
-  }
+  if (loading) return (
+    <div className="py-12 text-center text-primary font-bold text-lg animate-pulse">
+      Ürün detayları yükleniyor...
+    </div>
+  );
+
+  if (error || !product) return (
+    <div className="py-12 text-center text-danger-text font-bold">
+      Ürün bulunamadı! Hata: {error}
+    </div>
+  );
+
+  
   return (
     <div className="w-full [&>div:nth-child(even)]:bg-light-bg flex flex-col">
-      {/* 1. ÇOCUK: ÜRÜN ANA KARTI */}
+      {/*  ÜRÜN ANA KARTI */}
 
       <div className="relative w-full flex flex-col py-8">
         <div
@@ -154,7 +156,7 @@ export function ProductDetailsCard() {
               {product.description}
             </p>
             <div className="flex flex-col gap-12">
-              {/* Renkler - Orijinal dinamik class yapın aynen bırakıldı */}
+            
               <div className="flex gap-2.5">
                 {colorsVariants.map((color, index) => (
                   <div
@@ -166,8 +168,8 @@ export function ProductDetailsCard() {
 
               {/* Butonlar */}
               <div className="flex gap-2.5">
-                <button className="px-5 py-2.5 bg-primary hover:bg-hover text-light-text rounded-sm">
-                  <h6>Select Options</h6>
+                <button onClick={()=>hadleAddCart(product)} className="px-5 py-2.5 bg-primary hover:bg-hover text-light-text rounded-sm">
+                  <h6>Sepete Ekle</h6>
                 </button>
                 <button className="w-10 h-10 bg-light-bg rounded-full flex items-center justify-center hover:scale-120 hover:bg-gray-200">
                   <Heart strokeWidth={1.5} className="w-5 h-5" />

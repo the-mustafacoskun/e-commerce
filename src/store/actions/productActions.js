@@ -28,6 +28,7 @@ export const fetchProductLists = (categoryId, sort) => {
     return (dispatch, getState) => {
 
         const { filter, offset, limit } = getState().product;
+         console.log('burada filter',filter);
         const params = new URLSearchParams();
         if (categoryId) {
             params.append('category', categoryId)
@@ -37,6 +38,7 @@ export const fetchProductLists = (categoryId, sort) => {
         }
         if (filter) {
             params.append('filter', filter)
+           
         }
         if (limit) {
             params.append('limit', limit)
@@ -57,19 +59,6 @@ export const fetchProductLists = (categoryId, sort) => {
             dispatch(setTotal(response.data.total))
 
 
-        }).catch((error) => {
-            dispatch(setFetchState('FAILED'));
-            console.error('Ürünleri Çekerken Hata Oluştu', error)
-        })
-    }
-}
-export const fetchProductDetails = (productId) => {
-    return (dispatch) => {
-        dispatch(setFetchState('FETCHING'));
-
-        api.get(`/products/${productId}`).then((response) => {
-            dispatch(setProductList([response.data]))
-            dispatch(setFetchState('FETCHED'))
         }).catch((error) => {
             dispatch(setFetchState('FAILED'));
             console.error('Ürünleri Çekerken Hata Oluştu', error)

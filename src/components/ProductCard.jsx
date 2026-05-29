@@ -1,25 +1,21 @@
-import { useSelector } from "react-redux";
+
+import { useCallback} from "react";
 import { useHistory } from "react-router-dom";
 
-function ProductCard({ id,bgImgUrl, title, actualPrice, salePrice ,colorsVariants, categoryId}) {
+function ProductCard({ id,bgImgUrl, title, actualPrice, salePrice ,colorsVariants, categoryId,gender,categoryName}) {
   const history =useHistory()
-  // 1. Redux store'dan tüm kategorileri çekiyoruz
-  const categories = useSelector((store) => store.product.categories);
+
   
-  // 2. Ürünün categoryId'sine sahip olan kategoriyi buluyoruz
-  const currentCategory = categories?.find(cat => Number(cat.id) === Number(categoryId));
   
-  // 3. Kategoriden cinsiyet metnini ("kadin" veya "erkek") türetiyoruz
-  const gender = currentCategory?.gender === "k" ? "kadin" : "erkek";
+ const nameSlug =title?.toLowerCase().replace(/\s+/g, "-");
   
-  // 4. "k:tisort" veya "e:ayakkabı" formatındaki code alanından kategori adını ayıklıyoruz
-  // Eğer kategori henüz yüklenmediyse kırılmasın diye fallback olarak "urun" veriyoruz
-  const categoryName = currentCategory?.code ? currentCategory.code.split(":")[1] : "urun";
+  const handleCardClick = useCallback(() => {
+    history.push(`/shop/${gender}/${categoryName}/${categoryId}/${nameSlug}/${id}`);
+  }, [history, gender, categoryName, categoryId, nameSlug, id]);
  
- const nameSlug = title?.toLowerCase().replace(/\s+/g, "-");
  
   return (
-    <div className="w-full " onClick={() =>  history.push(`/shop/${gender}/${categoryName}/${categoryId}/${nameSlug}/${id}`)}>
+    <div className="w-full " onClick={handleCardClick}>
       <div className="flex flex-col justify-center items-center gap-4">
         
         <img 

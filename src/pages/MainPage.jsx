@@ -1,32 +1,12 @@
-import { useDispatch, useSelector } from "react-redux";
 import { BlogCard } from "../components/BlogCard";
 import { Carousel } from "../components/Carousel";
 import { Container } from "../components/Container";
 import { HalfSubCategoryCard } from "../components/HalfSubCategoryCard";
 import Hero from "../components/Hero";
-import ProductCard from "../components/ProductCard";
 import { SubCategoryCard } from "../components/SubCategoryCard";
-import { useEffect } from "react";
-import { fetchProductLists } from "../store/actions/productActions";
-
+import { BestSellerCard } from "../components/ProductDetailsComponents/BestSellerCard";
 
 export default function MainPage() {
-   const colorsVariants = [
-    "bg-amber-500",
-    "bg-blue-600",
-    "bg-green-400",
-    "bg-red-300",
-  ];
-const products = useSelector((store)=>store.product.productList);
-const dispatch = useDispatch();
-useEffect(() => {
-  
-   
-    if (Array.isArray(products) || !products || !products.products || products.products.length === 0) {
-      dispatch(fetchProductLists(undefined, "rating:desc")); // Thunk aksiyonunuzu tetikliyoruz
-    }
-  }, [dispatch, products]);
-
   return (
     <div className="w-full">
       <Hero />
@@ -76,25 +56,7 @@ useEffect(() => {
           </p>
         </div>
 
-        
-        <div className="flex flex-wrap justify-center gap-7.5">
-          {!Array.isArray(products) && products?.products?.slice(0,8).map((product) => (
-            <div
-              key={product.id}
-              className="w-full sm:w-[calc(50%-15px)] md:w-[calc(33.33%-20px)] lg:w-[calc(25%-23px)]"
-            >
-              <ProductCard
-                id={product.id} 
-                bgImgUrl={product?.images?.[0]?.url}
-                title={product.name}
-                actualPrice={product.price}
-                salePrice={product.price}
-                colorsVariants={colorsVariants}
-                categoryId={product.category_id}
-              />
-            </div>
-          ))}
-        </div>
+        <BestSellerCard />
       </div>
 
       <div className="w-full">
@@ -103,21 +65,22 @@ useEffect(() => {
       <div className="w-full mt-8">
         <Container />
       </div>
-      
+
       {/* BLOG ALANI */}
       <div className="my-20 md:my-28">
         <div className="flex flex-col justify-center items-center text-center px-10 sm:px-6 lg:px-10 xl:px-20 mb-20 gap-2.5 max-w-7xl mx-auto">
           <h6 className="text-primary-text">Practice Advice</h6>
           <h2>Featured Products</h2>
           <p className="text-second-text">
-            Problems trying to resolve the conflict between<br className="hidden md:block"/> the two major realms
-            of Classical physics: Newtonian mechanics
+            Problems trying to resolve the conflict between
+            <br className="hidden md:block" /> the two major realms of Classical
+            physics: Newtonian mechanics
           </p>
         </div>
         <div className="flex flex-col md:flex-row gap-7.5 md:gap-2.5 px-10 sm:px-6 lg:px-10 xl:px-20 xl:mx-auto max-w-7xl mx-auto">
-          <BlogCard bgImgUrl='/unsplash_1.png' />
-          <BlogCard bgImgUrl='/unsplash_2.png' />
-          <BlogCard bgImgUrl='/unsplash_3.png'/>
+          <BlogCard bgImgUrl="/unsplash_1.png" />
+          <BlogCard bgImgUrl="/unsplash_2.png" />
+          <BlogCard bgImgUrl="/unsplash_3.png" />
         </div>
       </div>
     </div>

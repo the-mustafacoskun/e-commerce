@@ -8,11 +8,11 @@ import {
   UserRound,
   X,
 } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, NavLink, useLocation,useHistory } from "react-router-dom";
+import { Link, NavLink, useLocation, useHistory } from "react-router-dom";
 import { setFilter } from "../../store/actions/productActions";
-
+import Cart from "../Cart";
 
 function Header() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -20,24 +20,55 @@ function Header() {
   const location = useLocation();
   const [shopDropDownOpen, setShopDropDownOpen] = useState(false);
   const user = useSelector((store) => store.client.user);
-
-const history =useHistory();
-  
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const history = useHistory();
 
   const categories = useSelector((store) => store.product.categories);
   const dispatch = useDispatch();
-  const currenFilter = useSelector((store)=>store.product.filter)
+  const currenFilter = useSelector((store) => store.product.filter);
 
-  const handleInputChange =(e)=>{
-     dispatch(setFilter(e.target.value))
-  }
-  const handleSearchSubmit=(e)=>{
-   e.preventDefault();
-   setIsSearchOpen(false);
-    if(!location.pathname.startsWith("/shop")){
+  const handleInputChange = (e) => {
+    dispatch(setFilter(e.target.value));
+  };
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    setIsSearchOpen(false);
+    if (!location.pathname.startsWith("/shop")) {
       history.push("/shop");
     }
-  }
+  };
+  const womenCategories = useMemo(
+    () =>
+      categories
+        ?.filter((category) => category.gender === "k")
+        .filter(
+          (category, index, currentArray) =>
+            currentArray.findIndex(
+              (x) => x.title === category.title && x.gender === category.gender,
+            ) === index,
+        )
+        .sort((a, b) => b.rating - a.rating),
+    [categories],
+  );
+
+  const menCategories = useMemo(
+    () =>
+      categories
+        ?.filter((category) => category.gender === "e")
+        .filter(
+          (category, index, currentArray) =>
+            currentArray.findIndex(
+              (item) => item.title === category.title && item.gender === category.gender,
+            ) === index,
+        )
+        .sort((a, b) => b.rating - a.rating),
+    [categories],
+  );
+   const cartProducts = useSelector((store) => store.shoppingCart.cart);
+  const totalCartProducts = cartProducts.reduce(
+    (total, item) => total + item.count,
+    0,
+  );
 
   return (
     <header className="w-full bg-white shadow-sm sticky top-0 z-50">
@@ -58,11 +89,11 @@ const history =useHistory();
               </div>
 
               {/* Masaüstü Menü: (1024px altında hamburger olacak) */}
-              <nav className="hidden lg:flex gap-6 items-center">
+              <nav className="hidden  lg:flex gap-6 items-center">
                 <NavLink
                   exact
                   to="/"
-                  className="font-link text-second-text hover:text-primary transition-colors whitespace-nowrap"
+                  className="font-link text-4xl text-second-text hover:text-primary transition-colors whitespace-nowrap"
                   activeClassName="text-primary font-bold"
                 >
                   Home
@@ -81,72 +112,44 @@ const history =useHistory();
                       <div className="flex flex-col gap-4">
                         <h6>Kadın</h6>
                         <div className="flex flex-col font-link text-second-text gap-4">
-                          {categories
-                            ?.filter(
-                              (categoryTitle) => categoryTitle.gender === "k",
-                            )
-                            .filter((category, index, currentArray) => {
-                              return (
-                                currentArray.findIndex(
-                                  (item) =>
-                                    item.title === category.title &&
-                                    item.gender === category.gender,
-                                ) === index
-                              );
-                            })
-                            .sort((a, b) => b.rating - a.rating)
-                            .map((category) => {
-                              const currentGender = "kadin";
-                              const categorySubTitle =
-                                category.code.split(":")[1];
-                              return (
-                                <Link
-                                  onClick={() =>
-                                    setShopDropDownOpen(!shopDropDownOpen)
-                                  }
-                                  key={category.id}
-                                  to={`/shop/${currentGender}/${categorySubTitle}/${category.id}`}
-                                >
-                                  {category.title}
-                                </Link>
-                              );
-                            })}
+                          {womenCategories.map((category) => {
+                            const currentGender = "kadin";
+                            const categorySubTitle =
+                              category.code.split(":")[1];
+                            return (
+                              <Link
+                                onClick={() =>
+                                  setShopDropDownOpen(!shopDropDownOpen)
+                                }
+                                key={category.id}
+                                to={`/shop/${currentGender}/${categorySubTitle}/${category.id}`}
+                              >
+                                {category.title}
+                              </Link>
+                            );
+                          })}
                         </div>
                       </div>
                       <div className="flex flex-col gap-4">
                         <h6>Erkek</h6>
                         <div className="flex flex-col font-link text-second-text gap-4">
-                          {categories
-                            ?.filter(
-                              (categoryTitle) => categoryTitle.gender === "e",
-                            )
-                            .filter((category, index, currentArray) => {
-                              return (
-                                currentArray.findIndex(
-                                  (item) =>
-                                    item.title === category.title &&
-                                    item.gender === category.gender,
-                                ) === index
-                              );
-                            })
-                            .sort((a, b) => b.rating - a.rating)
-                            .map((category) => {
-                              const currentGender = "erkek";
+                          {menCategories.map((category) => {
+                            const currentGender = "erkek";
 
-                              const categorySubTitle =
-                                category.code.split(":")[1];
-                              return (
-                                <Link
-                                  onClick={() =>
-                                    setShopDropDownOpen(!shopDropDownOpen)
-                                  }
-                                  key={category.id}
-                                  to={`/shop/${currentGender}/${categorySubTitle}/${category.id}`}
-                                >
-                                  {category.title}
-                                </Link>
-                              );
-                            })}
+                            const categorySubTitle =
+                              category.code.split(":")[1];
+                            return (
+                              <Link
+                                onClick={() =>
+                                  setShopDropDownOpen(!shopDropDownOpen)
+                                }
+                                key={category.id}
+                                to={`/shop/${currentGender}/${categorySubTitle}/${category.id}`}
+                              >
+                                {category.title}
+                              </Link>
+                            );
+                          })}
                         </div>
                       </div>
                     </div>
@@ -226,31 +229,36 @@ const history =useHistory();
               )}
 
               {/* İkonlar */}
-              <div className="flex items-center gap-3 lg:gap-4 text-primary">
-                <button
-                  onClick={() => setIsSearchOpen(!isSearchOpen)}
-                  className="hover:scale-110 transition-transform"
-                >
-                  <Search className="w-5 h-5 text-primary cursor-pointer" />
-                </button>
+              <div className="relative">
+                <div className="flex items-center gap-3 lg:gap-4 text-primary">
+                  <button
+                    onClick={() => setIsSearchOpen(!isSearchOpen)}
+                    className="hover:scale-110 transition-transform"
+                  >
+                    <Search className="w-6 h-6 text-primary cursor-pointer" />
+                  </button>
+                  <div className="hidden sm:flex items-center gap-1 text-primary">
+                    <Heart className="w-6 h-6 text-primary cursor-pointer" />
+                    <span className="text-xs font-normal text-primary">1</span>
+                  </div>
 
-                <div className="flex items-center gap-1 text-primary">
-                  <ShoppingCart className="w-5 h-5 text-primary cursor-pointer" />
-                  <span className="text-xs font-normal text-primary">1</span>
+                  <div className="flex items-center gap-1 text-primary" onClick={()=>setIsCartOpen(!isCartOpen)}>
+                    <ShoppingCart className="w-6 h-6 text-primary cursor-pointer" />
+                    <span className="text-xs font-normal text-primary">{totalCartProducts}</span>
+                  </div>
+
+                  <button
+                    className="lg:hidden p-1 text-text pr-0 sm:pr-4"
+                    onClick={() => setIsMobileOpen(!isMobileOpen)}
+                  >
+                    {isMobileOpen ? <X size={28} /> : <Menu size={28} />}
+                  </button>
                 </div>
-
-                <div className="hidden sm:flex items-center gap-1 text-primary">
-                  <Heart className="w-5 h-5 text-primary cursor-pointer" />
-                  <span className="text-xs font-normal text-primary">1</span>
-                </div>
-
-                {/* Mobil Hamburger: lg:hidden yapıldı (820px'de görünür olacak) */}
-                <button
-                  className="lg:hidden p-1 text-text pr-0 sm:pr-4"
-                  onClick={() => setIsMobileOpen(!isMobileOpen)}
-                >
-                  {isMobileOpen ? <X size={28} /> : <Menu size={28} />}
-                </button>
+                {isCartOpen && (
+                  <div className="absolute top-10 right-0">
+                    <Cart />
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -272,53 +280,53 @@ const history =useHistory();
 
         {/* Mobil Menü: lg kırılmasında gizlenecek */}
         <div
-          className={`w-full flex flex-col justify-center items-center gap-8 transition-all duration-500 ease-in-out overflow-hidden bg-white ${isMobileOpen ? "max-h-150 py-10 opacity-100 border-b border-gray-100" : "max-h-0 opacity-0"} lg:hidden`}
+          className={`w-full flex mobile-menu flex-col justify-center items-center gap-8 transition-all duration-500 ease-in-out overflow-hidden bg-white ${isMobileOpen ? "max-h-150 py-10 opacity-100 border-b border-gray-100" : "max-h-0 opacity-0"} lg:hidden`}
         >
           <Link
             to="/"
             onClick={() => setIsMobileOpen(false)}
-            className="font-link text-second-text hover:text-primary transition-colors"
+            className=" text-second-text hover:text-primary transition-colors"
           >
             Home
           </Link>
           <Link
             to="/shop"
             onClick={() => setIsMobileOpen(false)}
-            className="font-link text-second-text hover:text-primary transition-colors"
+            className=" text-second-text hover:text-primary transition-colors"
           >
             Shop
           </Link>
           <Link
             to="/about"
             onClick={() => setIsMobileOpen(false)}
-            className="font-link text-second-text hover:text-primary transition-colors"
+            className=" text-second-text hover:text-primary transition-colors"
           >
             About
           </Link>
           <Link
             to="/blog"
             onClick={() => setIsMobileOpen(false)}
-            className="font-link text-second-text hover:text-primary transition-colors"
+            className=" text-second-text hover:text-primary transition-colors"
           >
             Blog
           </Link>
           <Link
             to="/contact"
             onClick={() => setIsMobileOpen(false)}
-            className="font-link text-second-text hover:text-primary transition-colors"
+            className=" text-second-text hover:text-primary transition-colors"
           >
             Contact
           </Link>
           <Link
             to="/pages"
             onClick={() => setIsMobileOpen(false)}
-            className="font-link text-second-text hover:text-primary transition-colors"
+            className=" text-second-text hover:text-primary transition-colors"
           >
             Pages
           </Link>
 
           {user && user.avatarUrl && user.token ? (
-            <div className="flex lg:hidden items-center gap-2">
+            <div className="flex  lg:hidden items-center gap-2">
               <span className="text-sm font-medium text-gray-700">
                 {user.name}
               </span>
