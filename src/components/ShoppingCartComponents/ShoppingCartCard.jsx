@@ -6,34 +6,15 @@ import {
   toggleProductChecked,
 } from "../../store/actions/shoppingCartActions";
 import {  Trash } from "lucide-react";
+import CheckBox from "../generalElements/CheckBox";
 
 export default function ShoppingCartCard({ cart }) {
   const dispatch = useDispatch();
   return (
     <div className="flex gap-4 w-full border-b border-b-gray-200 text-black py-4 items-stretch">
       <div className="flex gap-4 flex-2">
-        <label className=" flex items-center cursor-pointer select-none">
-          {/* Gerçek inputu gizliyoruz ama arkada çalışmaya devam ediyor */}
-          <input
-            type="checkbox"
-            onChange={() => dispatch(toggleProductChecked(cart))}
-            checked={cart.checked}
-            className="sr-only"
-          />
-
-          {/* Bizim kendi tasarladığımız sahte checkbox kutusu */}
-          <div
-            className={`w-5 h-5 border rounded flex items-center justify-center transition-colors
-    ${cart.checked ? "bg-alert border-alert text-white" : "border-gray-300 bg-white"}`}
-          >
-            {cart.checked && (
-              <span className="text-white text-[12px] font-black leading-none select-none">
-                ✓
-              </span>
-            )}
-           
-          </div>
-        </label>
+        <CheckBox text="" value={cart.checked} setValue={() => dispatch(toggleProductChecked(cart))}/>
+        
         <img
           src={cart.product.images?.[0]?.url}
           alt={cart.product.name}

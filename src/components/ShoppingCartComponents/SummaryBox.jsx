@@ -4,7 +4,7 @@ import { useState } from "react";
 export default function SummaryBox({ totalCartPrice }) {
   const [discountIsOpen, setDiscountIsOpen] = useState(false);
   const [discountRate, setDiscountRate] = useState(null);
-  const cargoprice = 10;
+  const cargoprice = totalCartPrice>0 ?10:0;
   const discountPrice =((discountRate/100)*totalCartPrice).toFixed(2)
   const sumPrice = (totalCartPrice-cargoprice-discountPrice).toFixed(2);
   return (

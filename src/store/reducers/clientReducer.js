@@ -1,10 +1,9 @@
-import { SET_LANGUAGE, SET_ROLES, SET_THEME, SET_USER } from "../types/actionTypes";
+import { SET_ADDRESS_LIST, SET_CREDIT_CARDS, SET_LANGUAGE, SET_ROLES, SET_THEME, SET_USER } from "../types/actionTypes";
 
 
 const initialState = {
     user: {},
     isAuthLoading:true,
-
     addressList:[],
     creditCards:[],
     roles: [],
@@ -21,6 +20,10 @@ export const clientReducer = (state = initialState, action) => {
             return { ...state, theme: action.payload };
         case SET_LANGUAGE:
             return { ...state, language: action.payload };
+        case SET_ADDRESS_LIST: 
+            return { ...state, addressList: action.payload };
+        case SET_CREDIT_CARDS:
+            return {...state,creditCards:action.payload}
         default:
             return state;
     }

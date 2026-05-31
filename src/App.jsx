@@ -16,8 +16,8 @@ import { useDispatch } from "react-redux";
 import { verifyUser } from "./store/actions/clientActions";
 import { fetchCategories } from "./store/actions/productActions";
 import Filter from "./components/Filter";
-import Cart from "./components/Cart";
 import ShoppingCartPage from "./pages/ShoppingCartPage";
+import CreateOrderPage from "./pages/CreateOrderPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -48,6 +48,7 @@ function App() {
           path="/products/:productId"
           component={ProductDetailsPage}
         />
+        <Route path='/create-order' component={CreateOrderPage} />
         <Route path = "/cart" component={ShoppingCartPage}/>
         <Route path='/filter' component={Filter}/>
         <Route path="/contact" component={ContactPage} />

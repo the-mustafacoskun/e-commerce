@@ -5,7 +5,8 @@ import "./index.css"; // ya da senin css dosyan
 import { Provider } from "react-redux";
 import { store } from "./store/store.js";
 import { ToastContainer } from "react-toastify";
-import { BrowserRouter } from "react-router-dom/cjs/react-router-dom.min.js";
+import { BrowserRouter } from "react-router-dom";
+import "react-country-state-city/dist/react-country-state-city.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

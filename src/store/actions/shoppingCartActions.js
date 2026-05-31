@@ -9,3 +9,6 @@ export const toggleProductChecked =(product)=>({type:TOGGLE_PRODUCT_CHECKED,payl
 
 export const setPayment =(payment)=> ({type:SET_PAYMENT,payload:payment})
 export const setAddress =(address)=> ({type:SET_ADDRESS,payload:address})
+
+
+
