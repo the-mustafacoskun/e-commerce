@@ -21,7 +21,8 @@ function Cart() {
       {totalCartProducts>0 && (
         <div className="flex gap-4 mx-6 ">
           <button onClick={()=>history.push('/cart')} className="bg-primary hover:bg-hover hover:cursor-pointer text-light-text p-3 rounded-lg flex-1 ">Sepete Git</button>
-          <button className="bg-alert  hover:bg-amber-700 hover:cursor-pointer text-light-text p-3 rounded-lg flex-1">Siparişi Tamamla</button>
+          {/* Checkout butonunun login gerekiyorsa referrer bilgisi state'e ekleniyor */}
+          <button onClick={()=>history.push({pathname: '/create-order', state: {referrer: '/cart'}})} className="bg-alert  hover:bg-amber-700 hover:cursor-pointer text-light-text p-3 rounded-lg flex-1">Siparişi Tamamla</button>
         </div>
       )}
     </div>

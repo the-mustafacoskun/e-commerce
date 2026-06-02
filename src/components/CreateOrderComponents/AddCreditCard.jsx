@@ -1,68 +1,113 @@
 import { ShieldCheck } from "lucide-react";
 import CheckBox from "../generalElements/CheckBox";
-import { useState } from "react";
+import { useEffect, useState } from "react"; // useEffect'e gerek kalmadı, sildik
 import { CustomDropdown } from "../generalElements/CustomDropDown";
-import { useDispatch } from "react-redux";
-import { postCreditCard } from "../../store/actions/clientActions";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteCreditCard, fetchCreditCards, postCreditCard, updateCreditCard } from "../../store/actions/clientActions";
 
-export default function AddCreditCard() {
+export default function AddCreditCard({ selectedCardId ,setSelectedCardId}) {
+  const dispatch = useDispatch();
   const [securePayment, setSecurePayment] = useState(false);
+  const [cvv, setCvv] = useState(""); 
+
   const months = Array.from({ length: 12 }, (_, i) =>
-    (i + 1).toString().padStart(2, "0"),
+    (i + 1).toString().padStart(2, "0")
   );
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 10 }, (_, i) =>
-    (currentYear + i).toString(),
+    (currentYear + i).toString()
   );
-  const dispatch=useDispatch();
-  // State'ler
-  const [selectedMonth, setSelectedMonth] = useState("");
-  const [selectedYear, setSelectedYear] = useState("");
-  const [cvv,setCvv]=useState(null)
-  const [cardNumber,setCardNumber] = useState(null);
-  const [nameOnTheCard,setNameOnTheCard] = useState(null)
-  const cardInfo ={card_no:cardNumber,expire_month:selectedMonth,expire_year:selectedYear,name_on_card:nameOnTheCard}
-  const handleSave =()=>{
-    dispatch(postCreditCard(cardInfo))
+
+  const cards = useSelector((store) => store.client.creditCards);
+  
+  const card = cards.find((c) => c.id === selectedCardId);
+
+  
+  const [selectedMonth, setSelectedMonth] = useState(card?.expire_month?.toString() || "");
+  const [selectedYear, setSelectedYear] = useState(card?.expire_year?.toString() || "");
+  const [cardNumber, setCardNumber] = useState(card?.card_no || "");
+  const [nameOnTheCard, setNameOnTheCard] = useState(card?.name_on_card || ""); 
+  
+  const cardInfo = {
+    card_no: cardNumber,
+    expire_month: selectedMonth,
+    expire_year: selectedYear,
+    name_on_card: nameOnTheCard,
+  };
+  const resetForm = () => {
+    setSelectedCardId(null);
+    setCardNumber("");
+    setNameOnTheCard("");
+    setSelectedYear("");
+    setSelectedMonth("");
+    setCvv("");
+  };
+  useEffect(() => {
+  dispatch(fetchCreditCards());
+}, [dispatch]); 
+
+// 2. Seçili kart değiştikçe formu senkronize eden efekt
+
+  const handleSave = () => {
+    dispatch(postCreditCard(cardInfo));
+    resetForm();
+  };
+
+  const handleUpdate =()=>{
+    const updatedCardInfo = {
+    id: selectedCardId, 
+    card_no: cardNumber,
+    expire_month: selectedMonth,
+    expire_year: selectedYear,
+    name_on_card: nameOnTheCard,
+  };
+  dispatch(updateCreditCard(updatedCardInfo));
+   
   }
+  const handleDelete = () => {
+    if (selectedCardId) {
+      dispatch(deleteCreditCard(selectedCardId));
+    }
+    resetForm();
+  };
+
   return (
-    <div className="flex flex-col gap-4 max-w-100">
-      <div className="flex justify-between ">
-        <h5>Kart Bilgileri</h5>
-        <h6 className="border-b  border-b-gray-300 hover:cursor-pointer">
-          Kayıtlı kartımla ödeme yap
-        </h6>
-      </div>
+    <div className="flex flex-col gap-4 w-full">
       <div className="flex flex-col gap-2">
-        <label>Kart Üzerindeki İsim</label>
+        <label className="text-sm font-medium text-gray-700">Kart Üzerindeki İsim</label>
         <input
-        minLength={4}
-        value={nameOnTheCard}
-        
+          minLength={4}
+          value={nameOnTheCard}
           onChange={(e) => {
-            e.target.value = e.target.value.replace(/[^A-Z a-z çğıöşü ÇĞİÖŞÜ]/g, "");
-            setNameOnTheCard(e.target.value)
+            // Sadece harf ve boşluk izni
+            const cleanValue = e.target.value.replace(/[^A-Za-z çğıöşüÇĞİÖŞÜ]/g, "");
+            setNameOnTheCard(cleanValue);
           }}
-          className="w-full bg-gray-300 p-2 pl-4 h-12 rounded-lg"
-        ></input>
+          className="w-full bg-gray-100 border border-gray-300 p-2 pl-4 h-12 rounded-lg focus:outline-none focus:border-alert transition-colors"
+          placeholder="Kart Üzerindeki İsmi Giriniz"
+        />
       </div>
+
       <div className="flex flex-col gap-2">
-        <label>Kart Numarası</label>
+        <label className="text-sm font-medium text-gray-700">Kart Numarası</label>
         <input
-        value={cardNumber}
-        minLength={13}
-        maxLength={19}
+          value={cardNumber}
+          minLength={16}
+          maxLength={16}
           onChange={(e) => {
-            e.target.value = e.target.value.replace(/[^0-9]/g, "");
-            setCardNumber(e.target.value)
+            // Sadece sayı izni
+            const cleanValue = e.target.value.replace(/[^0-9]/g, "");
+            setCardNumber(cleanValue);
           }}
-          className="w-full bg-gray-300 p-2 pl-4 h-12 rounded-lg"
-        ></input>
+          className="w-full bg-gray-100 border border-gray-300 p-2 pl-4 h-12 rounded-lg focus:outline-none focus:border-alert transition-colors"
+          placeholder="0000 0000 0000 0000"
+        />
       </div>
-      <div className="flex justify-between">
-        <div>
-          <h6>Son Kullanma Tarihi</h6>
-          <div className="flex gap-4">
+
+      <div className="flex justify-between gap-4">
+        <div className="flex-1">
+          <label className="text-sm font-medium text-gray-700 block mb-2">Son Kullanma Tarihi</label>
+          <div className="flex gap-2">
             <CustomDropdown
               options={months}
               value={selectedMonth}
@@ -77,28 +122,55 @@ export default function AddCreditCard() {
             />
           </div>
         </div>
-        <div className="flex flex-col">
-          <label>CVV</label>
+        
+        <div className="flex flex-col w-32">
+          <label className="text-sm font-medium text-gray-700 mb-2">CVV</label>
           <input
-          value={cvv}
+            value={cvv}
             onChange={(e) => {
-              e.target.value = e.target.value.replace(/[^0-9]/g, "");
-              setCvv(e.target.value)
+              const cleanValue = e.target.value.replace(/[^0-9]/g, "");
+              setCvv(cleanValue);
             }}
             minLength={3}
             maxLength={4}
-            className="w-30 bg-gray-300 p-2 pl-4 h-12 rounded-lg"
-          ></input>
+            className="w-full bg-gray-100 border border-gray-300 p-2 pl-4 h-12 rounded-lg focus:outline-none focus:border-alert transition-colors"
+            placeholder="000"
+          />
         </div>
       </div>
-      <div className="flex items-center gap-2">
+
+      <div className="flex items-center gap-2 mt-2">
         <CheckBox text="" value={securePayment} setValue={setSecurePayment} />
-        <span className="flex">
-          <ShieldCheck fill="black" className="text-white" />
+        <span className="flex items-center gap-1 text-sm text-gray-600">
+          <ShieldCheck fill="black" className="text-white w-5 h-5" />
           3D Secure ile ödemek istiyorum
         </span>
       </div>
-       <button onClick={handleSave} className="bg-alert hover:bg-amber-700 text-light-text text-xl w-full py-3 rounded-lg ">Kaydet</button>
+
+      
+      {!selectedCardId  ? (
+        <button
+          onClick={handleSave}
+          className="bg-alert hover:bg-amber-700 text-white text-lg w-full py-3 rounded-lg font-semibold transition-colors mt-2"
+        >
+          + Yeni Kartı Kaydet
+        </button>
+      ) : (
+        <div className="flex gap-4 mt-2">
+          <button
+            onClick={handleDelete}
+            className="bg-red-50 hover:bg-red-100 text-red-600 text-lg w-full py-3 rounded-lg font-semibold transition-colors border border-red-200"
+          >
+            Sil
+          </button>
+          <button
+          onClick={handleUpdate}
+            className="bg-alert hover:bg-amber-700 text-white text-lg w-full py-3 rounded-lg font-semibold transition-colors"
+          >
+            Güncelle
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -84,12 +84,10 @@ function Filter({ onPriceFilter }) {
             placeholder="Search"
             value={searchTerm}
             onChange={(e) => {
-              console.log("input değişti:", e.target.value); // ✅ ekle
               setSearchTerm(e.target.value);
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                console.log("Enter basıldı, searchTerm:", searchTerm); // ✅ ekle
                 dispatch(setFilter(searchTerm));
                 setSearchTerm("");
               }

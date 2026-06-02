@@ -19,7 +19,7 @@ export const fetchCategories = () => {
             dispatch(setCategories(response.data))
 
         }).catch((error) => {
-            console.log('Categoriler çekilirken hata oluştu', error)
+            console.error('Kategoriler çekilirken hata oluştu', error)
         })
     }
 }
@@ -28,7 +28,6 @@ export const fetchProductLists = (categoryId, sort) => {
     return (dispatch, getState) => {
 
         const { filter, offset, limit } = getState().product;
-         console.log('burada filter',filter);
         const params = new URLSearchParams();
         if (categoryId) {
             params.append('category', categoryId)

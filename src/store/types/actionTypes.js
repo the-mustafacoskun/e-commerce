@@ -25,6 +25,8 @@ export const DELETE_CART_ITEM ='DELETE_CART_ITEM';
 export const INCREMENT_PRODUCT_COUNT="INCREMENT_PRODUCT_COUNT";
 export const DECREMENT_PRODUCT_COUNT="DECREMENT_PRODUCT_COUNT";
 export const TOGGLE_PRODUCT_CHECKED="TOGGLE_PRODUCT_CHECKED";
+// 🔧 Sipariş gönderilince sepeti temizlemek için
+export const CLEAR_CART ='CLEAR_CART';
 
 
 

@@ -1,4 +1,4 @@
-import { SET_ADDRESS, SET_CART, SET_PAYMENT, DELETE_CART_ITEM, INCREMENT_PRODUCT_COUNT, DECREMENT_PRODUCT_COUNT, TOGGLE_PRODUCT_CHECKED } from "../types/actionTypes"
+import { SET_ADDRESS, SET_CART, SET_PAYMENT, DELETE_CART_ITEM, INCREMENT_PRODUCT_COUNT, DECREMENT_PRODUCT_COUNT, TOGGLE_PRODUCT_CHECKED, CLEAR_CART } from "../types/actionTypes"
 
 
 const initialState = {
@@ -48,6 +48,12 @@ export const shoppingCartReducer = (state = initialState, action) => {
             const updatedCheckCart = state.cart.map((item) => item.product.id === action.payload.product.id ? { ...item, checked: !item.checked } : item)
             return { ...state, cart: updatedCheckCart }
         }
+        
+        // 🔧 Sipariş gönderildikten sonra sepeti temizle
+        case CLEAR_CART: {
+            return { ...state, cart: [] }
+        }
+        
         case SET_PAYMENT:
             return { ...state, payment: action.payload }
         case SET_ADDRESS:

@@ -26,7 +26,6 @@ function SignUp() {
   const turkishIbanRegex = /^TR\d{24}$/i;
 
   const history = useHistory();
-  console.log(history.location);
   useEffect(() => {
     api
       .get("/roles")
@@ -35,16 +34,15 @@ function SignUp() {
         const foundRole = res.data.find((item) => item.code === "customer");
         setValue("role_id", foundRole.id);
       })
-      .catch((err) => console.log("Hata var:", err));
+      .catch((err) => console.error(err));
   }, [setValue]);
-  console.log(selectedRoleId);
 
   const submitFn = (data) => {
     // eslint-disable-next-line no-unused-vars
     const { confirmPassword, ...submitData } = data;
     api
       .post("/signup", submitData)
-      .then((res) => {
+      .then(() => {
         const destination = location.state?.from || "/login";
         toast.success(
           "You need to click link in email to activate your account!",
@@ -65,11 +63,9 @@ function SignUp() {
           pathname: destination,
           state: { from: history.location.pathname },
         });
-
-        console.log("Signed Up Succesfully", res.data);
       })
       .catch((err) => {
-        console.error("Error occurred", err.message);
+        console.error(err.message);
         let errorMessage = "Kayıt Sırasında Hata Oluştu";
 
         if (err.response?.data?.err?.code === "SQLITE_CONSTRAINT") {

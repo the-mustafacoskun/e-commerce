@@ -8,13 +8,16 @@ function ShoppingCartPage() {
     (total, item) => total + item.count,
     0,
   );
-  const totalCartPrice = cartProducts
-    .reduce(
-      (total, item) =>
-        item.checked === true ? total + item.product.price * item.count : total,
-      0,
-    )
-    .toFixed(2);
+  
+  const totalCartPrice = Number(
+    cartProducts
+      .reduce(
+        (total, item) =>
+          item.checked === true ? total + item.product.price * item.count : total,
+        0,
+      )
+      .toFixed(2)
+  );
 
   return (
     <div className="flex flex-col md:flex-row gap-6 max-w-7xl mx-auto px-4 py-10 text-black">

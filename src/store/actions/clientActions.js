@@ -44,8 +44,12 @@ export const loginUser = (credantials, rememberMe, location, history) => {
                 }
                 dispatch(setUser(response.data));
 
-                const { from } = location.state || { from: { pathname: "/" } }
-                history.replace(from)
+
+                // Location.state'de 'from' veya 'referrer' varsa o sayfaya geri dön
+                // Yoksa ana sayfaya yönlendir
+                const state = location.state || {};
+                const redirectPath = state.from?.pathname || state.referrer || "/";
+                history.replace(redirectPath)
             }).catch((err) => {
                 alert(err.response?.data?.message || 'E-mail or Passsword is wrong!');
             })
@@ -71,7 +75,7 @@ export const verifyUser = () => (dispatch) => {
         localStorage.removeItem('token');
         delete api.defaults.headers.common['Authorization'];
         dispatch(setUser({}))
-        console.error('hata burada ', err)
+        console.error(err)
     })
 
 }
@@ -89,7 +93,7 @@ export const fetchUserAddress = (forceRefresh = false) => (dispatch, getState) =
     }
     api.get('/user/address', { headers: { Authorization: token } }).then((response) =>
         dispatch(setAddressList(response.data))
-    ).catch((err) => console.error('Adresleri çekerken hata oluştur', err))
+    ).catch((err) => console.error(err))
 }
 
 export const postUserAddress = (data) => (dispatch) => {
@@ -104,7 +108,7 @@ export const postUserAddress = (data) => (dispatch) => {
         dispatch(fetchUserAddress(true));
     }
 
-    ).catch((err) => console.error('Adresleri çekerken hata oluştur', err))
+    ).catch((err) => console.error(err))
 }
 export const updateUserAddress = (data) => (dispatch) => {
 
@@ -113,7 +117,7 @@ export const updateUserAddress = (data) => (dispatch) => {
 
     api.put('/user/address', data, { headers: { Authorization: token } })
         .then(() => dispatch(fetchUserAddress(true)))
-        .catch((err) => console.error('Put isteğinde hata oluştu', err))
+        .catch((err) => console.error(err))
 
 }
 export const deleteUserAddress = (addressId) => (dispatch) => {
@@ -126,21 +130,47 @@ export const deleteUserAddress = (addressId) => (dispatch) => {
         .catch((err) => console.error('Delete isteğinde hata oluştu', err))
 
 }
-export const fetchCreditCards =()=>(dispatch)=>{
+export const fetchCreditCards = () => (dispatch) => {
     const token = localStorage.getItem('token');
     if (!token) return;
-     api.get('/user/card', { headers: { Authorization: token } }).then((response) =>
+    api.get('/user/card', { headers: { Authorization: token } }).then((response) =>
         dispatch(setCreditCards(response.data))
-    ).catch((err) => console.error('Kredi kartlarını çekerken hata oluştur', err))
+    ).catch((err) => console.error(err))
 }
 
-export const postCreditCard=(cardInfo)=>(dispatch)=>{
+export const postCreditCard = (cardInfo) => (dispatch) => {
     const token = localStorage.getItem('token');
     if (!token) return;
-     api.post('/user/card', cardInfo, { headers: { Authorization: token } }).then(() => {
+    api.post('/user/card', cardInfo, { headers: { Authorization: token } }).then(() => {
 
         dispatch(fetchCreditCards(true));
-    }).catch((err)=>console.error('Kredi kartı kaydedilirken hata oluştu',err))
+    }).catch((err) => console.error(err))
 
 
 }
+export const updateCreditCard = (cardInfo) => (dispatch) => {
+
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    api.put('/user/card', cardInfo, { headers: { Authorization: token } })
+        .then(() => dispatch(fetchCreditCards(true)))
+        .catch((err) => console.error(err))
+
+}
+
+
+export const deleteCreditCard = (cardId) => (dispatch) => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    
+    api.delete(`/user/card/${cardId}`, { headers: { Authorization: token } })
+        .then(() => {
+          
+            dispatch(fetchCreditCards(true));
+        })
+        .catch((err) => console.error(err))
+}
+
+
+

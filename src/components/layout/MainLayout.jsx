@@ -1,4 +1,3 @@
-import AnnouncementBar from './AnnouncementBar'
 import Footer from './Footer'
 import Header from './Header'
 

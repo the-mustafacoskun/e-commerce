@@ -18,6 +18,7 @@ import { fetchCategories } from "./store/actions/productActions";
 import Filter from "./components/Filter";
 import ShoppingCartPage from "./pages/ShoppingCartPage";
 import CreateOrderPage from "./pages/CreateOrderPage";
+import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 
 function App() {
   const dispatch = useDispatch();
@@ -48,7 +49,9 @@ function App() {
           path="/products/:productId"
           component={ProductDetailsPage}
         />
-        <Route path='/create-order' component={CreateOrderPage} />
+        <Route path='/create-order' >
+        {localStorage.getItem("token")?(<CreateOrderPage/>):(<Redirect to={{pathname:"/login",state:{from:{pathname:'/create-order'}}}}/>)}
+        </Route>
         <Route path = "/cart" component={ShoppingCartPage}/>
         <Route path='/filter' component={Filter}/>
         <Route path="/contact" component={ContactPage} />

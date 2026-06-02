@@ -1,12 +1,24 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import { useHistory } from "react-router-dom";
 
 export default function SummaryBox({ totalCartPrice }) {
   const [discountIsOpen, setDiscountIsOpen] = useState(false);
-  const [discountRate, setDiscountRate] = useState(null);
-  const cargoprice = totalCartPrice>0 ?10:0;
-  const discountPrice =((discountRate/100)*totalCartPrice).toFixed(2)
-  const sumPrice = (totalCartPrice-cargoprice-discountPrice).toFixed(2);
+  const [discountRate, setDiscountRate] = useState(0);
+  
+  
+  const cargoprice = totalCartPrice > 0 ? 10 : 0;
+  
+  
+  const discountPrice = Number(
+    ((discountRate / 100) * totalCartPrice).toFixed(2),
+  );
+  
+ 
+  const sumPrice = Number(
+    (totalCartPrice + cargoprice - discountPrice).toFixed(2),
+  );
+  const history = useHistory();
   return (
     <div className="w-80 shrink-0 border flex flex-col gap-6 border-gray-200 rounded-md bg-light-bg p-4">
       <div className="flex flex-col gap-4 border-b border-gray-200 pb-8">
@@ -27,7 +39,6 @@ export default function SummaryBox({ totalCartPrice }) {
         )}
       </div>
       <div className="flex justify-between">
-        
         <h5>Fiyat</h5>
         <h5>{sumPrice}</h5>
       </div>
@@ -64,7 +75,6 @@ export default function SummaryBox({ totalCartPrice }) {
                 className="grow w-full pl-3 text-sm bg-white focus:outline-none"
               />
 
-              
               <button className="bg-[#BDBDBD] text-white text-[14px] px-5 font-medium -mx-4 hover:bg-gray-500 transition-colors shrink-0 h-full">
                 Uygula
               </button>
@@ -72,7 +82,21 @@ export default function SummaryBox({ totalCartPrice }) {
           </div>
         )}
       </div>
-      <button className="bg-alert hover:bg-amber-700 text-light-text text-xl w-full py-3 rounded-lg ">
+      <button
+        onClick={() =>
+          // 🔧 FIX: Checkout butonunun login gerekiyorsa referrer bilgisi state'e ekleniyor
+          history.push({
+            pathname: "/create-order",
+            state: {
+              referrer: '/cart',
+              sumPrice,
+              cargoprice,
+              discountPrice,
+            },
+          })
+        }
+        className="bg-alert hover:bg-amber-700 text-light-text text-xl w-full py-3 rounded-lg "
+      >
         Sepeti Onayla
       </button>
     </div>
