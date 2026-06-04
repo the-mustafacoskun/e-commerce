@@ -2,7 +2,7 @@ import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { setFilter } from "../store/actions/productActions";
+import { setFilter, setOffset } from "../store/actions/productActions";
 
 function Filter({ onPriceFilter }) {
   const [minRangeValue, setMinRangeValue] = useState(0);
@@ -39,7 +39,7 @@ function Filter({ onPriceFilter }) {
   const handleFilterSubmit = (e) => {
     e.preventDefault();
     dispatch(setFilter(searchTerm));
-    setSearchTerm("");
+    dispatch(setOffset(0));
   };
 
   const uniqueGenders = useMemo(() => {

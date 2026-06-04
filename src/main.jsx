@@ -7,10 +7,12 @@ import { store } from "./store/store.js";
 import { ToastContainer } from "react-toastify";
 import { BrowserRouter } from "react-router-dom";
 import "react-country-state-city/dist/react-country-state-city.css";
+import ScrollTop from "./components/ScrollTop.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
+    <ScrollTop/>
       <Provider store={store}>
         <App />
         <ToastContainer

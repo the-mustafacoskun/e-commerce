@@ -25,7 +25,7 @@ function ShoppingCartPage() {
         <div className="flex flex-col gap-4">
           <h4>Sepetim ({totalCartProducts} ürün)</h4>
           {cartProducts.map((cart) => {
-            return <ShoppingCartCard key={cart.id} cart={cart} />;
+            return <ShoppingCartCard key={cart.product.id} cart={cart} />;
           })}
         </div>
         {cartProducts.length > 0 && (

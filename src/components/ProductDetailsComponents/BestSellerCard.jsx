@@ -6,7 +6,7 @@ import ProductCard from "../ProductCard";
 export function BestSellerCard() {
   const colorsVariants = ["bg-amber-500", "bg-blue-600", "bg-green-400", "bg-red-300"];
   const products = useSelector((store) => store.product.productList);
-  const categories = useSelector((store) => store.product.categories); // ✅ ekle
+  const categories = useSelector((store) => store.product.categories); 
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -16,12 +16,10 @@ export function BestSellerCard() {
 
   return (
     <div>
-      <h3 className="px-10 sm:px-6 lg:px-10 xl:px-20 border-b border-dotted border-second-text text-center md:text-start pb-4 my-6">
-        BESTSELLER PRODUCTS
-      </h3>
+      
       <div className="flex flex-wrap justify-center gap-7.5">
         {products?.products?.slice(0, 8).map((product) => {
-          // ✅ Her kart için hesapla, ProductCard'a prop olarak geç
+         
           const category = categories?.find(cat => cat.id === product.category_id);
           const gender = category?.gender === "k" ? "kadin" : "erkek";
           const categoryName = category?.code?.split(":")[1] || "urun";

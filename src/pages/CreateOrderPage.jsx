@@ -33,7 +33,7 @@ function CreateOrderPage() {
       .toFixed(2),
   );
 
-  // 🔧 FIX: location.state boş gelebileceğini kontrol et
+  
   const state = location.state || {};
   const {
     sumPrice = totalCartPrice + 10,
@@ -41,7 +41,7 @@ function CreateOrderPage() {
     discountPrice = 0,
   } = state;
   const [activeTab, setActiveTab] = useState("address");
-  const [sameBillAddress, setSameBillAddress] = useState(false);
+  const [sameBillAddress, setSameBillAddress] = useState(true);
   const [newAddressIsOpen, setNewAddressIsOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState(null);
   const [addNewCard, setAddNewCard] = useState(false);
@@ -50,7 +50,7 @@ function CreateOrderPage() {
   const creditCards = useSelector((store) => store.client.creditCards);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedCreditCard, setSelectedCreditCard] = useState(null);
-  // 🔧 Kredi kartı CVC/CVV kodu için state
+  const [orderResult, setOrderResult] = useState(null);
   const [cardCCV, setCardCCV] = useState("");
 
   useEffect(() => {
@@ -68,39 +68,39 @@ function CreateOrderPage() {
     }
   }
   
-  // 🔧 Sipariş gönderme fonksiyonu
+  // Sipariş gönderme fonksiyonu
   const handleSubmitOrder = () => {
-    // Validasyon: Adres seçili mi?
+   
     if (!selectedAddress?.id) {
-      alert("❌ Lütfen teslimat adresini seçiniz");
+      alert("Lütfen teslimat adresini seçiniz");
       return;
     }
     
-    // Validasyon: Kart seçili mi?
+    
     if (!selectedCreditCard?.id) {
-      alert("❌ Lütfen ödeme kartını seçiniz");
+      alert(" Lütfen ödeme kartını seçiniz");
       return;
     }
     
-    // Validasyon: CVC girildi mi?
+   
     if (!cardCCV || cardCCV.length < 3) {
-      alert("❌ Lütfen geçerli bir CVC giriniz");
+      alert("Lütfen geçerli bir CVC giriniz");
       return;
     }
     
-    // Validasyon: Seçili ürün var mı?
+    
     const selectedProducts = cartProducts.filter(item => item.checked === true);
     if (selectedProducts.length === 0) {
-      alert("❌ Lütfen en az bir ürün seçiniz");
+      alert("Lütfen en az bir ürün seçiniz");
       return;
     }
     
-    // 🔧 Sipariş payload'ı oluştur (API'nin beklediği format)
+    
     const orderPayload = {
       // Teslimat Adresi
       address_id: selectedAddress.id,
       
-      // Sipariş Tarihi (ISO 8601 formatında: 2024-01-10T14:18:30)
+      
       order_date: new Date().toISOString(),
       
       // Kredi Kartı Bilgileri
@@ -108,7 +108,7 @@ function CreateOrderPage() {
       card_name: selectedCreditCard.name_on_card,
       card_expire_month: selectedCreditCard.expire_month,
       card_expire_year: selectedCreditCard.expire_year,
-      card_ccv: parseInt(cardCCV),  // String → Number dönüştür
+      card_ccv: parseInt(cardCCV),  
       
       // Fiyat
       price: sumPrice,
@@ -117,14 +117,23 @@ function CreateOrderPage() {
       products: selectedProducts.map(item => ({
         product_id: item.product.id,
         count: item.count,
-        detail: item.product.description  // Renk, beden vs bilgisi
+        detail: item.product.description  
       }))
     };
     
-    // API'ye sipariş gönder
-    dispatch(submitOrder(orderPayload));
+    
+    dispatch(submitOrder(orderPayload,(orderData) => setOrderResult(orderData)));
   }
-  
+  if (orderResult) {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-6">
+      
+      <h2>Siparişiniz Başarıyla Alındı!</h2>
+      <p>Sipariş Numarası: #{orderResult.id}</p>
+      <p>Ödenen Tutar: {orderResult.price}$</p>
+    </div>
+  );
+}
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] min-h-screen bg-gray-50">
@@ -204,7 +213,7 @@ function CreateOrderPage() {
                 />
               </div>
 
-              {/* Adres Kartları Grid Düzeni */}
+              {/* Adres Kartları  */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Teslimat Adresi Kolonu */}
                 <div>

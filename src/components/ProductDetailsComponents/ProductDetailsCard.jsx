@@ -68,7 +68,10 @@ const { product, loading, error } = state;
 
       <div className="relative w-full flex flex-col py-8">
         <div
-          onClick={() => history.goBack()}
+          onClick={() => {
+            history.goBack()
+              window.scrollTo(0, 0)
+          }}
           className="absolute top-0  z-20 mb-6 hover:cursor-pointer text-primary flex items-center hover:scale-110"
         >
           <button>
@@ -148,7 +151,7 @@ const { product, loading, error } = state;
                 <h6
                   className={`${product.stock > 0 ? "text-primary" : "text-danger-text"}`}
                 >
-                  {product.stock ? "In Stock" : "Out Of Stock"}
+                  {product.stock ? "In Stock" : "Out Of Stock"}  {product.stock}
                 </h6>
               </div>
             </div>

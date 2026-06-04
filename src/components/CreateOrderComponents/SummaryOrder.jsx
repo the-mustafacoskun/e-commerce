@@ -8,10 +8,10 @@ export default function SummaryOrder({
   totalCartPrice,
   selectedAddress,
   selectedCreditCard,
-  onSubmitOrder  //CreateOrderPage'den gelen submit handler
+  onSubmitOrder  
 }) {
 
-    // (button aktif/pasif durumu)
+    
     const isValid = selectedAddress && selectedCreditCard
 
 
@@ -42,13 +42,13 @@ export default function SummaryOrder({
         
       </div>
       
-      {/* 🔧 Sepeti Onayla Butonu -  */}
+      {/*Sepeti Onayla Butonu -  */}
       <button 
         disabled={!isValid}
         onClick={onSubmitOrder}
         className={`${!isValid ? 'bg-gray-300 cursor-not-allowed':'bg-alert hover:bg-amber-700'} text-light-text text-xl w-full py-3 rounded-lg transition-colors font-semibold`}
       >
-        {!isValid ? "❌ Adres ve Kart Seçiniz" : "✓ Sepeti Onayla"}
+        {!isValid ? " Adres ve Kart Seçiniz" : "Sepeti Onayla"}
       </button>
     </div>
   );

@@ -21,6 +21,7 @@ export default function LoginPage() {
     const {email,password}=data;
     const credentials = {email,password}
     const {rememberMe} = data
+    console.log('Location bilgisi',location);
     dispatch(loginUser(credentials,rememberMe,location,history));
   }
 

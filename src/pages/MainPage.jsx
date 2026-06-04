@@ -23,12 +23,12 @@ export default function MainPage() {
       <div className="max-w-7xl flex flex-col md:flex-row gap-6 px-10 sm:px-6 lg:px-10 xl:px-20 xl:mx-auto items-stretch mx-auto">
         {/* MEN - 1. Kolon */}
         <div className="flex-1">
-          <SubCategoryCard bgImgUrl="/filter-1.png" title="MEN" />
+          <SubCategoryCard bgImgUrl="/filter-1.png" title="ERKEK" />
         </div>
 
         {/* WOMEN - 2. Kolon */}
         <div className="flex-1">
-          <SubCategoryCard bgImgUrl="/filter-2.png" title="WOMEN" />
+          <SubCategoryCard bgImgUrl="/filter-2.png" title="KADIN" />
         </div>
 
         {/* ACCESSORIES & KIDS - 3. Kolon */}

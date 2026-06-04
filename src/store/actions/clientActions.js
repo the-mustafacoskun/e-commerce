@@ -34,6 +34,9 @@ export const getRoles = () => {
 
 export const loginUser = (credantials, rememberMe, location, history) => {
     return (dispatch) => {
+        console.log("Thunk içine giren location:", location);
+
+        console.log("Thunk içine giren history:", history);
         api.post('/login', credantials)
             .then((response) => {
                 const cleanEmail = response.data.email.trim().toLowerCase();
@@ -45,8 +48,7 @@ export const loginUser = (credantials, rememberMe, location, history) => {
                 dispatch(setUser(response.data));
 
 
-                // Location.state'de 'from' veya 'referrer' varsa o sayfaya geri dön
-                // Yoksa ana sayfaya yönlendir
+
                 const state = location.state || {};
                 const redirectPath = state.from?.pathname || state.referrer || "/";
                 history.replace(redirectPath)
@@ -163,10 +165,10 @@ export const updateCreditCard = (cardInfo) => (dispatch) => {
 export const deleteCreditCard = (cardId) => (dispatch) => {
     const token = localStorage.getItem('token');
     if (!token) return;
-    
+
     api.delete(`/user/card/${cardId}`, { headers: { Authorization: token } })
         .then(() => {
-          
+
             dispatch(fetchCreditCards(true));
         })
         .catch((err) => console.error(err))
