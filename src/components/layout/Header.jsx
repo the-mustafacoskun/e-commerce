@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink, useLocation, useHistory } from "react-router-dom";
 import { setFilter } from "../../store/actions/productActions";
 import Cart from "../Cart";
+import { setUser } from "../../store/actions/clientActions";
 
 function Header() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -73,6 +74,11 @@ function Header() {
     (total, item) => total + item.count,
     0,
   );
+  const handleLogout =()=>{
+    localStorage.removeItem('token');
+    dispatch(setUser({}));
+    history.push('/');
+  }
 
   return (
     <header className="w-full bg-white shadow-sm sticky top-0 z-50">
@@ -211,9 +217,9 @@ function Header() {
                     />
                   </div>
                   {isCustomerOpen && (
-                    <div className="absolute flex flex-col gap-4 bg-amber-100 text-alert-text p-10 left-0 rounded-xl">
+                    <div className="absolute flex flex-col gap-4 items-start bg-blue-50 text-alert-text p-10 left-0 rounded-xl">
                       <Link to="/previous-orders">Siparişlerim</Link>
-                      <Link>Ayarlar</Link>
+                      <button onClick={handleLogout}>Logout</button>
                     </div>
                   )}
                 </div>
