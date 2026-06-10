@@ -1,6 +1,7 @@
 import { DECREMENT_PRODUCT_COUNT, DELETE_CART_ITEM, SET_ORDERS, INCREMENT_PRODUCT_COUNT, SET_ADDRESS, SET_CART, SET_PAYMENT, TOGGLE_PRODUCT_CHECKED, CLEAR_CART } from "../types/actionTypes"
 import { api } from '../../api'
 import { decrementStock } from "./productActions"
+import { toast } from "react-toastify"
 
 
 export const setCart = (cart) => ({ type: SET_CART, payload: cart })
@@ -20,9 +21,10 @@ export const submitOrder = (orderPayload, onSuccess) => (dispatch) => {
 
     api.post('/order', orderPayload)
         .then((response) => {
-            alert('Sipariş başarıyla oluşturuldu! ✓');
             
-            console.log('order post cevabı', orderPayload);
+            toast.success('Sipariş başarıyla oluşturuldu! ✓');
+            
+            
             orderPayload.products.forEach((product)=>{
                 console.log('Sipariş edilen ürün:', product);
                 dispatch(decrementStock({product_id:product.product_id,count:product.count}))
@@ -34,7 +36,7 @@ export const submitOrder = (orderPayload, onSuccess) => (dispatch) => {
         .catch((err) => {
 
             const errorMessage = err.response?.data?.message || 'Sipariş oluşturulurken bir hata oluştu!';
-            alert(errorMessage);
+            toast.error(errorMessage);
             console.error('Sipariş hatası:', err);
         });
 };

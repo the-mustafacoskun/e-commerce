@@ -5,7 +5,7 @@ import {
   fetchCreditCards,
   fetchUserAddress,
 } from "../store/actions/clientActions";
-import { submitOrder } from "../store/actions/shoppingCartActions";  // 🔧 shoppingCartActions'ten import et
+import { submitOrder } from "../store/actions/shoppingCartActions";  
 import { CircleAlert, Plus, Smartphone, Trash, UserRound } from "lucide-react";
 import CheckBox from "../components/generalElements/CheckBox";
 import { AddressForm } from "../components/CreateOrderComponents/AddressForm";
@@ -13,14 +13,14 @@ import AddCreditCard from "../components/CreateOrderComponents/AddCreditCard";
 import { MyCreditCard } from "../components/CreateOrderComponents/CreditCard";
 import { ShieldCheck } from "lucide-react";
 import SummaryOrder from "../components/CreateOrderComponents/SummaryOrder";
-import { useLocation } from "react-router-dom";
+import { useLocation ,useHistory} from "react-router-dom";
 
 function CreateOrderPage() {
   const dispatch = useDispatch();
   const userAddresses = useSelector((store) => store.client.addressList);
   const cartProducts = useSelector((store) => store.shoppingCart.cart);
   const location = useLocation();
-
+  const history =useHistory();
   const totalCartPrice = Number(
     cartProducts
       .reduce(
@@ -97,7 +97,7 @@ function CreateOrderPage() {
     
     
     const orderPayload = {
-      // Teslimat Adresi
+    
       address_id: selectedAddress.id,
       
       
@@ -127,10 +127,13 @@ function CreateOrderPage() {
   if (orderResult) {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-6">
-      
-      <h2>Siparişiniz Başarıyla Alındı!</h2>
-      <p>Sipariş Numarası: #{orderResult.id}</p>
-      <p>Ödenen Tutar: {orderResult.price}$</p>
+      <h2 className="text-green-500">Siparişiniz Başarıyla Alındı!</h2>
+      <h3>Sipariş Numarası: #{orderResult.id}</h3>
+      <h4 >Ödenen Tutar: <span className="text-alert-text">{orderResult.price}$</span></h4>
+      <div className="flex gap-6 my-6">
+        <button className="bg-alert p-5 rounded-lg text-light-text text-lg" onClick={()=>history.push('/myorders')}>Siparişlerim</button>
+        <button className="bg-primary p-5 rounded-lg text-light-text text-lg" onClick={()=>history.push('/')}>Ana Sayfa</button>
+      </div>
     </div>
   );
 }

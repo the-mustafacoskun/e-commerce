@@ -65,8 +65,8 @@ function App() {
         <Route path='/create-order' >
         {localStorage.getItem("token")?(<CreateOrderPage/>):(<Redirect to={{pathname:"/login",state:{referrer:'/create-order'}}}/>)}
         </Route>
-         <Route path='/previous-orders' >
-        {localStorage.getItem("token")?(<PreviousOrders/>):(<Redirect to={{pathname:"/login",state:{referrer:'/previous-orders'}}}/>)}
+         <Route path='/myorders' >
+        {localStorage.getItem("token")?(<PreviousOrders/>):(<Redirect to={{pathname:"/login",state:{referrer:'/myorders'}}}/>)}
         </Route>
         <Route path = "/cart" component={ShoppingCartPage}/>
         <Route path='/filter' component={Filter}/>

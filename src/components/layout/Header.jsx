@@ -218,7 +218,7 @@ function Header() {
                   </div>
                   {isCustomerOpen && (
                     <div className="absolute flex flex-col gap-4 items-start bg-blue-50 text-alert-text p-10 left-0 rounded-xl">
-                      <Link to="/previous-orders">Siparişlerim</Link>
+                      <Link to="/myorders">Siparişlerim</Link>
                       <button onClick={handleLogout}>Logout</button>
                     </div>
                   )}

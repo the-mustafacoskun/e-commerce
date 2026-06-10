@@ -12,10 +12,10 @@ export default function BlogPage() {
           {[1, 2, 3, 4, 5, 6].map((item) => (
             <div key={item} className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 bg-white flex flex-col">
               <div className="bg-gray-200 h-48 flex items-center justify-center">
-                <p className="text-gray-500 text-sm">Blog Post {item} Image</p>
+                <img className="text-gray-500 text-sm" src="unsplash_1.png"/>
               </div>
               <div className="p-6 flex flex-col gap-4 flex-1">
-                <div className="flex gap-3 text-xs text-gray-500">
+                <div className="flex gap-3 text-xs text-white">
                   <span>Google</span>
                   <span>Trending</span>
                 </div>

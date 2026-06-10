@@ -46,6 +46,23 @@ src/
 ├── api/
 │   └── api.js                  # Configured Axios instance with global interceptors
 ├── components/
+    |──CreateOrderComponents/
+    |    ├── AddressForm.jsx            # User address book management forms
+    |    ├── AddCreditCard.jsx          # Credit card information management forms
+    |    |──SummaryOrder.jsx             # Final order review and confirmation interface
+    |    |──CreditCard.jsx            # Reusable credit card information display component
+    |──GeneralElements/
+    |    |──CheckBox.jsx                # Custom styled checkbox inputs
+    |    |──CustomDropdown.jsx             # Reusable dropdown selector component
+    |──Layout/
+    |    |──Announcement.jsx           # Top-of-page promotional banner component
+    |    |──Footer.jsx              # Multi-column dynamic application footer
+    |    |──Header.jsx              # Desktop/Mobile responsive core navigational bar
+    |──ShopComponents/
+        |──BrandsFav.jsx             # Brand logos and quick-access favorite categories
+        |──CategoryCard.jsx        # Product category entry banners
+        |──ViewAndFilterButtons.jsx           # Search, sort, and dual-slider price control buttons
+
 │   ├── CartDropdown.jsx        # Quick-view navbar basket modal
 │   ├── CategoryCard.jsx        # Product category entry banners
 │   ├── Filter.jsx              # Search, sort, and dual-slider price control engine
