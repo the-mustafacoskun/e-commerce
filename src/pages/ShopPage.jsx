@@ -11,6 +11,7 @@ import {
   setOffset,
 } from "../store/actions/productActions";
 import { api } from "../api";
+import ProductCardList from "../components/ProductCardList";
 
 function ShopPage() {
   const categories = useSelector((store) => store.product.categories);
@@ -24,6 +25,9 @@ function ShopPage() {
 
   const [categoryCounts, setCategoryCounts] = useState({});
   const [allProducts, setAllProducts] = useState([]);
+  
+  // true: Grid (Izgara) Görünümü, false: List (Satır) Görünümü
+  const [productsDisplay, setProductsDisplay] = useState(true);
 
   const colorsVariants = [
     "bg-amber-500",
@@ -34,7 +38,7 @@ function ShopPage() {
   const [priceRange, setPriceRange] = useState({ min: 0, max: 2000 });
   const [sort, setSort] = useState("");
 
-  // 1. Tüm ürünleri çekip kategorilerdeki ürün yasını hesapladık
+  // 1. Tüm ürünleri çekip kategorilerdeki ürün sayısını hesaplama
   useEffect(() => {
     if (!categories || categories.length === 0) return;
 
@@ -43,7 +47,6 @@ function ShopPage() {
       setAllProducts(rawProducts);
 
       const counts = {};
-
       rawProducts.forEach((p) => {
         counts[p.category_id] = (counts[p.category_id] || 0) + 1;
       });
@@ -69,9 +72,8 @@ function ShopPage() {
     })
     .filter((p) => p.price >= priceRange.min && p.price <= priceRange.max);
 
-  // 3. Sıralama Mantığı (Orijinal referansı bozmamak için dizi kopyalanıyor)
+  // 3. Sıralama Mantığı
   const sortedProducts = [...filteredProducts];
-
   if (sort === "price:asc") {
     sortedProducts.sort((a, b) => a.price - b.price);
   } else if (sort === "price:desc") {
@@ -94,56 +96,43 @@ function ShopPage() {
     }
   }
 
-  // 5. Sadece O Sayfaya Ait Ürün Dilimi
+  // 5. Sayfalanmış Ürün Dilimi
   const displayedProducts = sortedProducts.slice(offset, offset + limit);
 
   // URL Query Parametreleri Güncelleme
   useEffect(() => {
     const newParams = new URLSearchParams(window.location.search);
-    currentFilter
-      ? newParams.set("filter", currentFilter)
-      : newParams.delete("filter");
+    currentFilter ? newParams.set("filter", currentFilter) : newParams.delete("filter");
     sort ? newParams.set("sort", sort) : newParams.delete("sort");
     limit ? newParams.set("limit", limit) : newParams.delete("limit");
     offset ? newParams.set("offset", offset) : newParams.delete("offset");
     history.push({ search: newParams.toString() });
   }, [sort, currentFilter, history, limit, offset]);
 
-  // Redux Tetikleyici Dinleyici
+  
   useEffect(() => {
     dispatch(fetchProductLists(categoryId, sort));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categoryId, sort, currentFilter, offset, gender]);
+  }, [categoryId, sort, currentFilter, offset, gender, dispatch]);
 
   // Kategori veya Cinsiyet Değiştiğinde Sayfa Sıfırlama
   useEffect(() => {
     dispatch(setFilter(""));
     dispatch(setOffset(0));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categoryId, gender]);
+  }, [categoryId, gender, dispatch]);
 
   return (
     <div>
       {/* KATEGORİ ALANI */}
       <div className="px-10 sm:px-6 lg:px-10 xl:px-20 py-8 w-full max-w-7xl xl:mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
           {categories
             .filter((category) => {
-              if (
+              const isGenderMatch =
                 (gender === "erkek" && category.gender === "e") ||
                 (gender === "kadin" && category.gender === "k") ||
-                !gender
-              ) {
-                return true;
-              } else {
-                return false;
-              }
+                !gender;
+              return isGenderMatch;
             })
-            .filter(
-              (category, index, arr) =>
-                arr.findIndex((item) => item.title === category.title) ===
-                index,
-            )
             .sort((a, b) => b.rating - a.rating)
             .slice(0, 5)
             .map((category) => {
@@ -164,14 +153,20 @@ function ShopPage() {
         </div>
       </div>
 
+      {/* FİLTRELEME VE GÖRÜNÜM BUTONLARI */}
       <div className="px-10 sm:px-6 lg:px-10 xl:px-20">
         <ViewAndFilterButtons
           sort={sort}
           setSort={setSort}
           onPriceFilter={(min, max) => setPriceRange({ min, max })}
+          productLength={filteredProducts.length}
+          // Eğer ViewAndFilterButtons componentine prop geçmek isterseniz:
+          setProductsDisplay={setProductsDisplay}
+          productsDisplay={productsDisplay}
         />
       </div>
 
+      {/* LOADING (YÜKLENİYOR) EKRANI */}
       {fetchState === "FETCHING" && (
         <div className="flex flex-col items-center justify-center min-h-75 w-full">
           <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-600" />
@@ -181,40 +176,59 @@ function ShopPage() {
         </div>
       )}
 
-      {fetchState === "FETCHED" && (
+      {/* ÜRÜN LİSTELEME ALANI */}
+      {fetchState === "FETCHED" && allProducts !== null  && (
         <div className="my-15 px-10 sm:px-6 lg:px-10 xl:px-20 max-w-7xl xl:mx-auto">
-          <div className="flex flex-wrap gap-6">
-            {displayedProducts.map((product) => {
-              const category = categories.find(
-                (cat) => cat.id === product.category_id,
-              );
-              const pGender = category?.gender === "k" ? "kadin" : "erkek";
-              const categoryName = category?.code?.split(":")[1] || "urun";
+          {displayedProducts && displayedProducts?.length > 0 && (
+            /* productsDisplay durumuna göre flex düzenini dinamik değiştiriyoruz */
+            <div className={`flex flex-wrap ${productsDisplay ? "gap-6" : "flex-col gap-4"}`}>
+              {displayedProducts.map((product) => {
+                const category = categories.find((cat) => cat.id === product.category_id);
+                const pGender = category?.gender === "k" ? "kadin" : "erkek";
+                const categoryName = category?.code?.split(":")[1] || "urun";
 
-              return (
-                <div
-                  key={product.id}
-                  className="w-full sm:w-[calc(50%-12px)] md:w-[calc(33.33%-16px)] lg:w-[calc(25%-18px)]"
-                >
-                  <ProductCard
-                    id={product.id}
-                    bgImgUrl={product.images[0]?.url}
-                    title={product.name}
-                    actualPrice={product.price}
-                    salePrice={product.price}
-                    colorsVariants={colorsVariants}
-                    categoryId={product.category_id}
-                    gender={pGender}
-                    categoryName={categoryName}
-                  />
-                </div>
-              );
-            })}
-          </div>
+                return !productsDisplay ? (
+                  
+                  <div key={product.id} className="w-full">
+                    <ProductCardList
+                      id={product.id}
+                      bgImgUrl={product.images[0]?.url}
+                      title={product.name}
+                      actualPrice={product.price}
+                      salePrice={product.price}
+                      colorsVariants={colorsVariants}
+                      categoryId={product.category_id}
+                      gender={pGender}
+                      categoryName={categoryName}
+                      originalProduct={product}
+                    />
+                  </div>
+                ) : (
+                  /* GRID  */
+                  <div
+                    key={product.id}
+                    className="w-full sm:w-[calc(50%-12px)] md:w-[calc(33.33%-16px)] lg:w-[calc(25%-18px)]"
+                  >
+                    <ProductCard
+                      id={product.id}
+                      bgImgUrl={product.images[0]?.url}
+                      title={product.name}
+                      actualPrice={product.price}
+                      salePrice={product.price}
+                      colorsVariants={colorsVariants}
+                      categoryId={product.category_id}
+                      gender={pGender}
+                      categoryName={categoryName}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          ) }
         </div>
       )}
 
-      {/* Sayfalama */}
+      {/* SAYFALAMA (PAGINATION) */}
       <div className="flex justify-center items-center my-10 gap-1">
         <button
           disabled={offset === 0}

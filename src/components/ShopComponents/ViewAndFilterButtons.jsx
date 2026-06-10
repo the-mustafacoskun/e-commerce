@@ -6,23 +6,26 @@ export const ViewAndFilterButtons = ({
   onPriceFilter,
   setSort,
   sort,
+  productLength,
+  setProductsDisplay,
+  productsDisplay
 }) => {
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
   return (
     <div>
       <div className="flex flex-col justify-center md:flex-row md:justify-between md:px-10 xl:px-20 items-center gap-6 my-6 max-w-7xl xl:mx-auto">
         <div className="text-second-text">
-          <h6>Showing all 12 results</h6>
+          <h6>Showing all {productLength} results</h6>
         </div>
         <div className="flex justify-center items-center gap-4">
           <h6 className="text-second-text">Views:</h6>
-          <div className="flex justify-center items-center  w-12 h-12 border hover:bg-[#DDDDDD] border-neutral-200/80 shadow-sm rounded-sm bg-white">
+          <div  onClick={()=>setProductsDisplay(true)} className="flex justify-center items-center  hover:cursor-pointer w-12 h-12 border hover:bg-[#DDDDDD] border-neutral-200/80 shadow-sm rounded-sm bg-white">
             <button>
               <LayoutGrid className="w-4 h-4" fill="black" />
             </button>
           </div>
-          <div className="flex justify-center items-center w-12 h-12 border hover:bg-[#DDDDDD] border-neutral-200/80 shadow-sm rounded-sm bg-white">
-            <button>
+          <div onClick={()=>setProductsDisplay(false)} className="flex justify-center items-center hover:cursor-pointer w-12 h-12 border hover:bg-[#DDDDDD] border-neutral-200/80 shadow-sm rounded-sm bg-white">
+            <button className="hover:cursor-pointer" >
               <TableOfContents style={{ transform: "scaleX(-1)" }} />
             </button>
           </div>

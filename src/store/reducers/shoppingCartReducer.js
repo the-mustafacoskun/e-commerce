@@ -13,20 +13,26 @@ export const shoppingCartReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_CART:
             {
-                const isProductExist = state.cart.find((item) => item.product.id === action.payload?.product?.id);
+                
+                if (!action.payload?.product?.id) return state;
+
+               
+                const isProductExist = state.cart.find((item) => item.product?.id === action.payload.product.id);
                 let newCart;
+
                 if (isProductExist) {
                     newCart = state.cart.map((item) => {
-                        if (item.product.id === action.payload?.product?.id) {
-                            return { ...item, count: item.count + 1,checked:true }
+                        if (item.product?.id === action.payload.product.id) {
+                            return { ...item, count: item.count + 1, checked: true }
                         }
-                        return item
+                        return item;
                     })
                 } else {
                     newCart = [...state.cart, action.payload]
                 }
                 return { ...state, cart: newCart }
             }
+
         case DELETE_CART_ITEM: {
             return { ...state, cart: state.cart.filter((item) => item.product.id !== action.payload.product.id) }
         }
@@ -35,10 +41,10 @@ export const shoppingCartReducer = (state = initialState, action) => {
             return { ...state, cart: updatedCountCart }
         }
         case DECREMENT_PRODUCT_COUNT: {
-            const targetedItem = state.cart.find((item)=>item.product.id===action.payload.product.id);
+            const targetedItem = state.cart.find((item) => item.product.id === action.payload.product.id);
 
-            if(targetedItem && targetedItem.count ===1){
-                return {...state,cart:state.cart.filter((item)=>item.product.id !== action.payload.product.id)}
+            if (targetedItem && targetedItem.count === 1) {
+                return { ...state, cart: state.cart.filter((item) => item.product.id !== action.payload.product.id) }
             }
 
             const updatedCountCart = state.cart.map((item) => item.product.id === action.payload.product.id ? { ...item, count: item.count - 1 } : item)
@@ -49,18 +55,18 @@ export const shoppingCartReducer = (state = initialState, action) => {
             const updatedCheckCart = state.cart.map((item) => item.product.id === action.payload.product.id ? { ...item, checked: !item.checked } : item)
             return { ...state, cart: updatedCheckCart }
         }
-        
-   
+
+
         case CLEAR_CART: {
             return { ...state, cart: [] }
         }
-       
+
         case SET_PAYMENT:
             return { ...state, payment: action.payload }
         case SET_ADDRESS:
             return { ...state, address: action.payload }
         case SET_ORDERS:
-            return {...state,orders:action.payload}
+            return { ...state, orders: action.payload }
         default:
             return state
     }

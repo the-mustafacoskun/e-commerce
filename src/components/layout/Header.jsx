@@ -120,7 +120,7 @@ function Header() {
                     <div className="absolute top-full grid grid-cols-2  gap-4 left-0 mt-2 w-100 bg-white shadow-lg p-4 z-50 rounded-md">
                       {/* kadın erkek dışında kategory gelirse cocuk gibi burayı değiştir*/}
                       <div className="flex flex-col gap-4">
-                        <Link to={"/shop/kadin"}>Kadın</Link>
+                        <Link to={"/shop/kadin"}><h4 className="border-b inline-block ">Kadın</h4></Link>
                         <div className="flex flex-col font-link text-second-text gap-4">
                           {womenCategories.map((category) => {
                             const currentGender = "kadin";
@@ -141,7 +141,7 @@ function Header() {
                         </div>
                       </div>
                       <div className="flex flex-col gap-4">
-                        <Link to="/shop/erkek">Erkek</Link>
+                        <Link to="/shop/erkek"><h4 className="border-b inline-block">Erkek</h4></Link>
                         <div className="flex flex-col font-link text-second-text gap-4">
                           {menCategories.map((category) => {
                             const currentGender = "erkek";

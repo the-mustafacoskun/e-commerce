@@ -13,7 +13,7 @@ export default function CheckBox({text,value,setValue}) {
           className="sr-only"
         />
         <div
-          className={`w-5 h-5 border rounded flex items-center justify-center transition-colors
+          className={`w-5 h-5 border rounded flex items-center justify-center shrink-0  transition-colors
                   ${value ? "bg-alert border-alert text-white" : "border-gray-300 bg-white"}`}
         >
           {value && (
