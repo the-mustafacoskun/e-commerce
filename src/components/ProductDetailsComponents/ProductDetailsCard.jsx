@@ -67,6 +67,7 @@ export function ProductDetailsCard() {
       localStorage.setItem('liked_products',JSON.stringify(likesArray));
       toast.warn('Ürün Favorilerden Çıkarıldı');
     }
+    window.dispatchEvent(new Event("likedProductsUpdated"));
   }
   useEffect(() => {
     api

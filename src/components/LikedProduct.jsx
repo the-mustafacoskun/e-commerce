@@ -1,4 +1,4 @@
-import {  ShoppingCart, Trash } from "lucide-react";
+import { ShoppingCart, Trash } from "lucide-react";
 import { toast } from "react-toastify";
 import { setCart } from "../store/actions/shoppingCartActions";
 import { useDispatch } from "react-redux";
@@ -13,11 +13,19 @@ export default function LikedProduct({ product }) {
 
     dispatch(decrementProductStock(product.id, 1));
   };
-  const handleDelete =(product)=>{
-    const allLikedProducts = JSON.parse(localStorage.getItem('liked_products'))||[];
-     const adjustedAllLikedProducts =allLikedProducts.filter((item)=>item.id !== product.id)
-    localStorage.setItem('liked_products',JSON.stringify(adjustedAllLikedProducts))
-  }
+  const handleDelete = (product) => {
+    const allLikedProducts =
+      JSON.parse(localStorage.getItem("liked_products")) || [];
+    const adjustedAllLikedProducts = allLikedProducts.filter(
+      (item) => item.id !== product.id,
+    );
+    localStorage.setItem(
+      "liked_products",
+      JSON.stringify(adjustedAllLikedProducts),
+    );
+    window.dispatchEvent(new Event("likedProductsUpdated"));
+    toast.warn("Ürün favorilerden kaldırıldı");
+  };
   return (
     <div>
       <div className="flex gap-4 border border-gray-200 rounded-xl p-2 text-black">
@@ -27,16 +35,18 @@ export default function LikedProduct({ product }) {
           <h6>{product.price}</h6>
         </div>
         <div className="flex flex-col justify-between ml-auto">
-           <button
+          <button
             onClick={() => handleAddCart(product)}
             className="self-end ml-auto text-primary-text hover:cursor-pointer"
           >
             <ShoppingCart />
           </button>
-          <button onClick={()=>handleDelete(product)} className="text-alert hover:cursor-pointer">
+          <button
+            onClick={() => handleDelete(product)}
+            className="text-alert hover:cursor-pointer"
+          >
             <Trash />
           </button>
-         
         </div>
       </div>
     </div>

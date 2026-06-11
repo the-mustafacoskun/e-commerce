@@ -10,7 +10,7 @@ import {
   UserRound,
   X,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink, useLocation, useHistory } from "react-router-dom";
 import { setFilter } from "../../store/actions/productActions";
@@ -82,7 +82,32 @@ function Header() {
     dispatch(setUser({}));
     history.push("/");
   };
-  const likedProducts = JSON.parse(localStorage.getItem("liked_products"))||[];
+  useEffect(()=>{
+    
+  },[])
+  // 1. Component gövdesindeki eski düz değişkeni sil ve STATE olarak tanımla
+const [likedProducts, setLikedProducts] = useState(() => {
+  return JSON.parse(localStorage.getItem("liked_products")) || [];
+});
+
+// 2. useEffect ile localStorage değişikliklerini canlı olarak dinle
+useEffect(() => {
+  // LocalStorage'dan güncel veriyi çekip state'e yazan fonksiyon
+  const updateLikes = () => {
+    const currentLikes = JSON.parse(localStorage.getItem("liked_products")) || [];
+    setLikedProducts(currentLikes);
+  };
+
+  // Hem yan sekmelerden gelen (storage) hem aynı sayfadan gelen (likedProductsUpdated) eventleri dinliyoruz
+  window.addEventListener("storage", updateLikes);
+  window.addEventListener("likedProductsUpdated", updateLikes);
+
+  
+  return () => {
+    window.removeEventListener("storage", updateLikes);
+    window.removeEventListener("likedProductsUpdated", updateLikes);
+  };
+}, []);
   
   return (
     <header className="w-full bg-white shadow-sm sticky top-0 z-50">
