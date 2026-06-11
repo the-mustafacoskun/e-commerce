@@ -282,16 +282,16 @@ function Header() {
                   <div
                     onClick={() => {
                       setIsLikedOpen(!isLikedOpen)
-                      likedProducts.length<1 && setIsLikedOpen(false);
+                      likedProducts?.length<1 && setIsLikedOpen(false);
                     }}
-                    className={`hidden relative sm:flex items-center gap-1 ${likedProducts.length>0 ?'text-alert-text':'text-primary'}`}
+                    className={`hidden relative sm:flex items-center gap-1 ${likedProducts?.length>0 ?'text-alert-text':'text-primary'}`}
                   >
                      
                     <Heart className="w-6 h-6  cursor-pointer hover:scale-120" />
-                    <span className={`text-xs font-bold `}>{likedProducts.length}</span>
+                    <span className={`text-xs font-bold `}>{likedProducts?.length}</span>
                     {isLikedOpen && (
                       <div className="absolute w-70 h-fit bg-white top-10 right-0 rounded-xl border border-orange-300">
-                        {likedProducts.map((product) => (
+                        {likedProducts?.map((product) => (
                           <LikedProduct key={product.id} product={product} />
                         ))}
                       </div>
