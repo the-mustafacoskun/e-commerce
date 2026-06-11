@@ -82,33 +82,26 @@ function Header() {
     dispatch(setUser({}));
     history.push("/");
   };
-  useEffect(()=>{
+
+ 
+  const likedProducts =
+    JSON.parse(localStorage.getItem("liked_products")) || [];
+
+  // Sadece bileşeni yeniden render etmeye yarayan boş bir tetikleyici state
+  const [, forceUpdate] = useState({});
+
+  useEffect(() => {
     
-  },[])
-  // 1. Component gövdesindeki eski düz değişkeni sil ve STATE olarak tanımla
-const [likedProducts, setLikedProducts] = useState(() => {
-  return JSON.parse(localStorage.getItem("liked_products")) || [];
-});
+    const handleUpdate = () => forceUpdate({});
 
-// 2. useEffect ile localStorage değişikliklerini canlı olarak dinle
-useEffect(() => {
-  // LocalStorage'dan güncel veriyi çekip state'e yazan fonksiyon
-  const updateLikes = () => {
-    const currentLikes = JSON.parse(localStorage.getItem("liked_products")) || [];
-    setLikedProducts(currentLikes);
-  };
+    window.addEventListener("storage", handleUpdate);
+    window.addEventListener("likedProductsUpdated", handleUpdate);
 
-  // Hem yan sekmelerden gelen (storage) hem aynı sayfadan gelen (likedProductsUpdated) eventleri dinliyoruz
-  window.addEventListener("storage", updateLikes);
-  window.addEventListener("likedProductsUpdated", updateLikes);
-
-  
-  return () => {
-    window.removeEventListener("storage", updateLikes);
-    window.removeEventListener("likedProductsUpdated", updateLikes);
-  };
-}, []);
-  
+    return () => {
+      window.removeEventListener("storage", handleUpdate);
+      window.removeEventListener("likedProductsUpdated", handleUpdate);
+    };
+  }, []);
   return (
     <header className="w-full bg-white shadow-sm sticky top-0 z-50">
       {/* 
@@ -306,14 +299,15 @@ useEffect(() => {
                   {/*beğenilenleri ekle buraya*/}
                   <div
                     onClick={() => {
-                      setIsLikedOpen(!isLikedOpen)
-                      likedProducts?.length<1 && setIsLikedOpen(false);
+                      setIsLikedOpen(!isLikedOpen);
+                      likedProducts?.length < 1 && setIsLikedOpen(false);
                     }}
-                    className={`hidden relative sm:flex items-center gap-1 ${likedProducts?.length>0 ?'text-alert-text':'text-primary'}`}
+                    className={`hidden relative sm:flex items-center gap-1 ${likedProducts?.length > 0 ? "text-alert-text" : "text-primary"}`}
                   >
-                     
                     <Heart className="w-6 h-6  cursor-pointer hover:scale-120" />
-                    <span className={`text-xs font-bold `}>{likedProducts?.length}</span>
+                    <span className={`text-xs font-bold `}>
+                      {likedProducts?.length}
+                    </span>
                     {isLikedOpen && (
                       <div className="absolute w-70 h-fit bg-white top-10 right-0 rounded-xl border border-orange-300">
                         {likedProducts?.map((product) => (
@@ -324,10 +318,10 @@ useEffect(() => {
                   </div>
 
                   <div
-                    className={`flex items-center gap-1 ${totalCartProducts>0 ?'text-alert-text':'text-primary'}`}
+                    className={`flex items-center gap-1 ${totalCartProducts > 0 ? "text-alert-text" : "text-primary"}`}
                     onClick={() => {
-                      setIsCartOpen(!isCartOpen)
-                      totalCartProducts<1 && setIsCartOpen(false)
+                      setIsCartOpen(!isCartOpen);
+                      totalCartProducts < 1 && setIsCartOpen(false);
                     }}
                   >
                     <ShoppingCart className="w-6 h-6 cursor-pointer hover:scale-120" />
