@@ -50,9 +50,8 @@ const dispatch =useDispatch();
       <div className="flex flex-col items-center sm:items-start gap-6">
         <h3>Reviews</h3>
         <div className="flex gap-2 justify-center md:justify-between  flex-wrap">
-          {allReview.filter((r) => r.productId === product?.id).length > 0 ? (
-            allReview
-              .filter((r) => r.productId === product.id)
+          {allReview?.filter((r) => r.productId === product?.id).length > 0 ? (
+            allReview?.filter((r) => r.productId === product.id)
               .map((review) => (
                 <div key={review.id}>
                   <ProductReviewCard review={review}/>

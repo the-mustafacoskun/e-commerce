@@ -228,9 +228,9 @@ export function ProductDetailsCard() {
 
                     // Sadece mevcut productId ile eşleşen yorumları filtreleyip uzunluğunu alalım
                     if (Array.isArray(allReviews)) {
-                      return allReviews.filter(
+                      return allReviews?.filter(
                         (r) => String(r.productId) === String(productId),
-                      ).length;
+                      )?.length;
                     }
                     return 0;
                   } catch (e) {

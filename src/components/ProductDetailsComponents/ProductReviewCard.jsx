@@ -6,8 +6,8 @@ export default function ProductReviewCard({ review }) {
     return name
       .split(" ")
       .map((word) => {
-        if (word.length <= 1) return word;
-        return word.substring(0, 1) + "*".repeat(word.length - 1);
+        if (word?.length <= 1) return word;
+        return word?.substring(0, 1) + "*".repeat(word?.length - 1);
       })
       .join(" ");
   };
@@ -16,7 +16,7 @@ export default function ProductReviewCard({ review }) {
     return email
       .split("@")
       .map((word) => {
-        return word.substring(0, 1) + "*".repeat(word.length - 1);
+        return word?.substring(0, 1) + "*".repeat(word?.length - 1);
       })
       .join("@");
   };
