@@ -224,7 +224,7 @@ export function ProductDetailsCard() {
 
                   try {
                    
-                    const allReviews = JSON.parse(savedReviews);
+                    const allReviews = JSON.parse(savedReviews) ||[];
 
                     // Sadece mevcut productId ile eşleşen yorumları filtreleyip uzunluğunu alalım
                     if (Array.isArray(allReviews)) {

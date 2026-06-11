@@ -82,7 +82,7 @@ function Header() {
     dispatch(setUser({}));
     history.push("/");
   };
-  const likedProducts = JSON.parse(localStorage.getItem("liked_products"));
+  const likedProducts = JSON.parse(localStorage.getItem("liked_products"))||[];
   
   return (
     <header className="w-full bg-white shadow-sm sticky top-0 z-50">

@@ -7,7 +7,7 @@ import { useParams, useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   fetchProductLists,
-  setFetchState,
+ 
   setFilter,
   setOffset,
 } from "../store/actions/productActions";

@@ -14,7 +14,7 @@ export default function LikedProduct({ product }) {
     dispatch(decrementProductStock(product.id, 1));
   };
   const handleDelete =(product)=>{
-    const allLikedProducts = JSON.parse(localStorage.getItem('liked_products'));
+    const allLikedProducts = JSON.parse(localStorage.getItem('liked_products'))||[];
      const adjustedAllLikedProducts =allLikedProducts.filter((item)=>item.id !== product.id)
     localStorage.setItem('liked_products',JSON.stringify(adjustedAllLikedProducts))
   }
