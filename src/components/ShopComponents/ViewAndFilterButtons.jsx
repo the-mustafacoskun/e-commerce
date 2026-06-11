@@ -35,7 +35,7 @@ export const ViewAndFilterButtons = ({
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value)}
-              className="text-[14px] gap-2 text-second-text border-neutral-200/80 shadow-sm rounded-sm hover:bg-[#DDDDDD] py-3 px-4.5 "
+              className="text-[14px] gap-2 text-second-text border-neutral-200/80 shadow-sm rounded-sm hover:bg-gray-200 py-3 px-4.5 "
               name="sort"
             >
               <option value="price:asc">Fiyata göre Artan</option>

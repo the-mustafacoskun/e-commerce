@@ -7,6 +7,7 @@ import { useParams, useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   fetchProductLists,
+  setFetchState,
   setFilter,
   setOffset,
 } from "../store/actions/productActions";
@@ -25,8 +26,8 @@ function ShopPage() {
 
   const [categoryCounts, setCategoryCounts] = useState({});
   const [allProducts, setAllProducts] = useState([]);
-  
-  // true: Grid (Izgara) Görünümü, false: List (Satır) Görünümü
+
+  // true: Grid görünümü, false: list  görünümü
   const [productsDisplay, setProductsDisplay] = useState(true);
 
   const colorsVariants = [
@@ -51,6 +52,7 @@ function ShopPage() {
         counts[p.category_id] = (counts[p.category_id] || 0) + 1;
       });
       setCategoryCounts(counts);
+      
     });
   }, [categories]);
 
@@ -102,23 +104,28 @@ function ShopPage() {
   // URL Query Parametreleri Güncelleme
   useEffect(() => {
     const newParams = new URLSearchParams(window.location.search);
-    currentFilter ? newParams.set("filter", currentFilter) : newParams.delete("filter");
+    currentFilter
+      ? newParams.set("filter", currentFilter)
+      : newParams.delete("filter");
     sort ? newParams.set("sort", sort) : newParams.delete("sort");
     limit ? newParams.set("limit", limit) : newParams.delete("limit");
     offset ? newParams.set("offset", offset) : newParams.delete("offset");
     history.push({ search: newParams.toString() });
   }, [sort, currentFilter, history, limit, offset]);
 
-  
   useEffect(() => {
     dispatch(fetchProductLists(categoryId, sort));
-  }, [categoryId, sort, currentFilter, offset, gender, dispatch]);
+  }, [categoryId, sort, offset, dispatch]);
 
   // Kategori veya Cinsiyet Değiştiğinde Sayfa Sıfırlama
   useEffect(() => {
     dispatch(setFilter(""));
     dispatch(setOffset(0));
   }, [categoryId, gender, dispatch]);
+  // Filtrelerden herhangi biri değiştiğinde sayfayı otomatik olarak 1. sayfaya (0) sıfırlar
+  useEffect(() => {
+    dispatch(setOffset(0));
+  }, [currentFilter, sort, priceRange.min, priceRange.max, dispatch]);
 
   return (
     <div>
@@ -160,7 +167,6 @@ function ShopPage() {
           setSort={setSort}
           onPriceFilter={(min, max) => setPriceRange({ min, max })}
           productLength={filteredProducts.length}
-          // Eğer ViewAndFilterButtons componentine prop geçmek isterseniz:
           setProductsDisplay={setProductsDisplay}
           productsDisplay={productsDisplay}
         />
@@ -177,18 +183,21 @@ function ShopPage() {
       )}
 
       {/* ÜRÜN LİSTELEME ALANI */}
-      {fetchState === "FETCHED" && allProducts !== null  && (
+      {fetchState === "FETCHED"  && (
         <div className="my-15 px-10 sm:px-6 lg:px-10 xl:px-20 max-w-7xl xl:mx-auto">
           {displayedProducts && displayedProducts?.length > 0 && (
             /* productsDisplay durumuna göre flex düzenini dinamik değiştiriyoruz */
-            <div className={`flex flex-wrap ${productsDisplay ? "gap-6" : "flex-col gap-4"}`}>
+            <div
+              className={`flex flex-wrap ${productsDisplay ? "gap-6" : "flex-col gap-4"}`}
+            >
               {displayedProducts.map((product) => {
-                const category = categories.find((cat) => cat.id === product.category_id);
+                const category = categories.find(
+                  (cat) => cat.id === product.category_id,
+                );
                 const pGender = category?.gender === "k" ? "kadin" : "erkek";
                 const categoryName = category?.code?.split(":")[1] || "urun";
 
                 return !productsDisplay ? (
-                  
                   <div key={product.id} className="w-full">
                     <ProductCardList
                       id={product.id}
@@ -224,7 +233,7 @@ function ShopPage() {
                 );
               })}
             </div>
-          ) }
+          )}
         </div>
       )}
 

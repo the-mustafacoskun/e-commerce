@@ -1,6 +1,6 @@
 import { DECREMENT_PRODUCT_COUNT, DELETE_CART_ITEM, SET_ORDERS, INCREMENT_PRODUCT_COUNT, SET_ADDRESS, SET_CART, SET_PAYMENT, TOGGLE_PRODUCT_CHECKED, CLEAR_CART } from "../types/actionTypes"
 import { api } from '../../api'
-import { decrementStock } from "./productActions"
+import { decrementProductStock } from "./productActions"
 import { toast } from "react-toastify"
 
 
@@ -27,7 +27,7 @@ export const submitOrder = (orderPayload, onSuccess) => (dispatch) => {
             
             orderPayload.products.forEach((product)=>{
                 console.log('Sipariş edilen ürün:', product);
-                dispatch(decrementStock({product_id:product.product_id,count:product.count}))
+                dispatch(decrementProductStock({product_id:product.product_id,count:product.count}))
             })
             dispatch(clearCart());
             onSuccess(response.data);

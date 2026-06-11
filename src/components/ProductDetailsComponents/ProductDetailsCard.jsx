@@ -8,12 +8,14 @@ import {
 import { useParams } from "react-router-dom";
 
 import { useEffect, useState } from "react";
-import ProductRewievForm from './ProductRewievForm.jsx'
+import ProductRewievForm from "./ProductRewievForm.jsx";
 import { useHistory } from "react-router-dom";
 import { api } from "../../api";
 import { setCart } from "../../store/actions/shoppingCartActions";
 import { useDispatch } from "react-redux";
 import ProductRating from "./ProductRating";
+import { toast } from "react-toastify";
+import { decrementProductStock } from "../../store/actions/productActions.js";
 
 export function ProductDetailsCard() {
   const colorsVariants = [
@@ -25,10 +27,7 @@ export function ProductDetailsCard() {
   const history = useHistory();
   const { productId } = useParams();
   const dispatch = useDispatch();
-  const handleAddCart = (product) => {
-    const formatedProduct = { count: 1, checked: true, product: product };
-    dispatch(setCart(formatedProduct));
-  };
+  const [isClicked, setIsClicked] = useState(false);
   const [options, setOptions] = useState("description");
   const [state, setState] = useState({
     product: null,
@@ -36,6 +35,39 @@ export function ProductDetailsCard() {
     error: null,
   });
 
+  const handleAddCart = (product) => {
+    toast.success("Ürün sepetinize eklendi");
+    const formatedProduct = { count: 1, checked: true, product: product };
+    dispatch(setCart(formatedProduct));
+    setIsClicked(true);
+    dispatch(decrementProductStock(product.id, 1));
+    setState((prev) => ({
+      ...prev,
+      product: {
+        ...prev.product,
+        stock: Math.max(0, prev.product.stock - 1),
+      },
+    }));
+
+    setTimeout(() => {
+      setIsClicked(false);
+    }, 2000);
+  };
+  const handleLikeClick =()=>{
+    const savedLikes =localStorage.getItem('liked_products');
+    let likesArray =savedLikes ? JSON.parse(savedLikes):[];
+    const isAlreadyLiked =likesArray.some((item)=>item.id ===product.id)
+    if(!isAlreadyLiked){
+      likesArray.push(product);
+      localStorage.setItem('liked_products',JSON.stringify(likesArray));
+      toast.success('Ürün Favorilere Eklendi!');
+      
+    }else {
+      likesArray = likesArray.filter((item)=>item.id !==product.id);
+      localStorage.setItem('liked_products',JSON.stringify(likesArray));
+      toast.warn('Ürün Favorilerden Çıkarıldı');
+    }
+  }
   useEffect(() => {
     api
       .get(`/products/${productId}`)
@@ -70,7 +102,7 @@ export function ProductDetailsCard() {
   return (
     <div className="w-full [&>div:nth-child(even)]:bg-light-bg flex flex-col">
       {/*  ÜRÜN ANA KARTI */}
-      
+
       <div className="relative w-full flex flex-col py-8">
         <div
           onClick={() => {
@@ -153,11 +185,11 @@ export function ProductDetailsCard() {
               <div className="flex gap-2.5">
                 <button
                   onClick={() => handleAddCart(product)}
-                  className="px-5 py-2.5 bg-primary hover:bg-hover text-light-text rounded-sm"
+                  className={`px-5 py-2.5 bg-primary hover:bg-hover text-light-text rounded-sm ${isClicked ? "bg-second-text" : " bg-primary hover:bg-hover"}`}
                 >
                   <h6>Sepete Ekle</h6>
                 </button>
-                <button className="w-10 h-10 bg-light-bg rounded-full flex items-center justify-center hover:scale-120 hover:bg-gray-200">
+                <button onClick={handleLikeClick} className="w-10 h-10 bg-light-bg rounded-full flex items-center justify-center hover:scale-120 hover:bg-gray-200">
                   <Heart strokeWidth={1.5} className="w-5 h-5" />
                 </button>
                 <button className="w-10 h-10 bg-light-bg rounded-full flex items-center justify-center hover:scale-120 hover:bg-gray-200">
@@ -183,7 +215,30 @@ export function ProductDetailsCard() {
             <button>Additional Information</button>
 
             <button onClick={() => setOptions("reviews")}>
-              Reviews<span className="text-secondary-1 "> (0)</span>
+              Reviews
+              <span className="text-secondary-1 ml-1">
+               ( {(() => {
+                 
+                  const savedReviews = localStorage.getItem("product_reviews");
+                  if (!savedReviews) return 0;
+
+                  try {
+                   
+                    const allReviews = JSON.parse(savedReviews);
+
+                    // Sadece mevcut productId ile eşleşen yorumları filtreleyip uzunluğunu alalım
+                    if (Array.isArray(allReviews)) {
+                      return allReviews.filter(
+                        (r) => String(r.productId) === String(productId),
+                      ).length;
+                    }
+                    return 0;
+                  } catch (e) {
+                    console.error("Yorumlar okunurken hata oluştu:", e);
+                    return 0;
+                  }
+                })()} )
+              </span>
             </button>
           </div>
 
@@ -241,7 +296,20 @@ export function ProductDetailsCard() {
           )}
           {options === "reviews" && (
             <div className="w-full flex flex-col md:flex-row gap-7.5 py-8 md:border-t border-dotted">
-             <ProductRewievForm product={product}/>
+              <ProductRewievForm
+                product={product}
+                onLocalRatingUpdate={(newRating) => {
+                  setState((prev) => ({
+                    ...prev,
+                    product: {
+                      ...prev.product,
+                      rating: Number(
+                        ((newRating + prev.product.rating) / 2).toFixed(2),
+                      ),
+                    },
+                  }));
+                }}
+              />
             </div>
           )}
         </div>

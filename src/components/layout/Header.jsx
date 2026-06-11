@@ -2,8 +2,10 @@ import {
   ChevronDown,
   ChevronRight,
   Heart,
+  LogOut,
   Menu,
   Search,
+  ShoppingBag,
   ShoppingCart,
   UserRound,
   X,
@@ -14,6 +16,7 @@ import { Link, NavLink, useLocation, useHistory } from "react-router-dom";
 import { setFilter } from "../../store/actions/productActions";
 import Cart from "../Cart";
 import { setUser } from "../../store/actions/clientActions";
+import LikedProduct from "../LikedProduct";
 
 function Header() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -24,7 +27,7 @@ function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCustomerOpen, setIsCustomerOpen] = useState(false);
   const history = useHistory();
-
+  const [isLikedOpen, setIsLikedOpen] = useState(false);
   const categories = useSelector((store) => store.product.categories);
   const dispatch = useDispatch();
   const currenFilter = useSelector((store) => store.product.filter);
@@ -74,12 +77,13 @@ function Header() {
     (total, item) => total + item.count,
     0,
   );
-  const handleLogout =()=>{
-    localStorage.removeItem('token');
+  const handleLogout = () => {
+    localStorage.removeItem("token");
     dispatch(setUser({}));
-    history.push('/');
-  }
-
+    history.push("/");
+  };
+  const likedProducts = JSON.parse(localStorage.getItem("liked_products"));
+  
   return (
     <header className="w-full bg-white shadow-sm sticky top-0 z-50">
       {/* 
@@ -120,7 +124,9 @@ function Header() {
                     <div className="absolute top-full grid grid-cols-2  gap-4 left-0 mt-2 w-100 bg-white shadow-lg p-4 z-50 rounded-md">
                       {/* kadın erkek dışında kategory gelirse cocuk gibi burayı değiştir*/}
                       <div className="flex flex-col gap-4">
-                        <Link to={"/shop/kadin"}><h4 className="border-b inline-block ">Kadın</h4></Link>
+                        <Link to={"/shop/kadin"}>
+                          <h4 className="border-b inline-block ">Kadın</h4>
+                        </Link>
                         <div className="flex flex-col font-link text-second-text gap-4">
                           {womenCategories.map((category) => {
                             const currentGender = "kadin";
@@ -141,7 +147,9 @@ function Header() {
                         </div>
                       </div>
                       <div className="flex flex-col gap-4">
-                        <Link to="/shop/erkek"><h4 className="border-b inline-block">Erkek</h4></Link>
+                        <Link to="/shop/erkek">
+                          <h4 className="border-b inline-block">Erkek</h4>
+                        </Link>
                         <div className="flex flex-col font-link text-second-text gap-4">
                           {menCategories.map((category) => {
                             const currentGender = "erkek";
@@ -217,9 +225,20 @@ function Header() {
                     />
                   </div>
                   {isCustomerOpen && (
-                    <div className="absolute flex flex-col gap-4 items-start bg-blue-50 text-alert-text p-10 left-0 rounded-xl">
-                      <Link to="/myorders">Siparişlerim</Link>
-                      <button onClick={handleLogout}>Logout</button>
+                    <div className="absolute flex flex-col gap-4 border border-orange-500 items-start bg-white  text-black p-10 left-0 rounded-xl">
+                      <Link to="/myorders">
+                        <div className="flex hover:text-alert-text just gap-2">
+                          <ShoppingBag />
+                          <span>Siparişlerim</span>
+                        </div>
+                      </Link>
+                      <button
+                        className="flex gap-2  hover:text-alert-text hover:cursor-pointer"
+                        onClick={handleLogout}
+                      >
+                        <LogOut />
+                        <span>Logout</span>
+                      </button>
                     </div>
                   )}
                 </div>
@@ -259,17 +278,35 @@ function Header() {
                   >
                     <Search className="w-6 h-6 text-primary cursor-pointer hover:scale-120" />
                   </button>
-                  <div className="hidden sm:flex items-center gap-1 text-primary">
-                    <Heart className="w-6 h-6 text-primary cursor-pointer hover:scale-120" />
-                    <span className="text-xs font-normal text-primary">1</span>
+                  {/*beğenilenleri ekle buraya*/}
+                  <div
+                    onClick={() => {
+                      setIsLikedOpen(!isLikedOpen)
+                      likedProducts.length<1 && setIsLikedOpen(false);
+                    }}
+                    className={`hidden relative sm:flex items-center gap-1 ${likedProducts.length>0 ?'text-alert-text':'text-primary'}`}
+                  >
+                     
+                    <Heart className="w-6 h-6  cursor-pointer hover:scale-120" />
+                    <span className={`text-xs font-bold `}>{likedProducts.length}</span>
+                    {isLikedOpen && (
+                      <div className="absolute w-70 h-fit bg-white top-10 right-0 rounded-xl border border-orange-300">
+                        {likedProducts.map((product) => (
+                          <LikedProduct key={product.id} product={product} />
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   <div
-                    className="flex items-center gap-1 text-primary"
-                    onClick={() => setIsCartOpen(!isCartOpen)}
+                    className={`flex items-center gap-1 ${totalCartProducts>0 ?'text-alert-text':'text-primary'}`}
+                    onClick={() => {
+                      setIsCartOpen(!isCartOpen)
+                      totalCartProducts<1 && setIsCartOpen(false)
+                    }}
                   >
-                    <ShoppingCart className="w-6 h-6 text-primary cursor-pointer hover:scale-120" />
-                    <span className="text-xs font-normal text-primary">
+                    <ShoppingCart className="w-6 h-6 cursor-pointer hover:scale-120" />
+                    <span className="text-xs font-bold ">
                       {totalCartProducts}
                     </span>
                   </div>
@@ -353,13 +390,13 @@ function Header() {
 
           {user && user.avatarUrl && user.token ? (
             <div className="flex  lg:hidden items-center gap-2">
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-lg font-medium text-gray-700">
                 {user.name}
               </span>
               <img
                 src={user.avatarUrl}
                 alt={user.name}
-                className="w-4 h-4 rounded-full object-cover border border-gray-200"
+                className="w-8 h-8 rounded-full object-cover border border-gray-200"
               />
             </div>
           ) : (

@@ -1,15 +1,30 @@
 import { api } from "../../api";
-import { DECREMENT_PRODUCT_STOCK, SET_CATEGORIES, SET_FETCH_STATE, SET_FILTER, SET_LIMIT, SET_OFFSET, SET_PRODUCT_LIST, SET_TOTAL } from "../types/actionTypes";
+import { DECREMENT_PRODUCT_STOCK, SET_CATEGORIES, SET_RATING, SET_FETCH_STATE, SET_FILTER, SET_LIMIT, SET_OFFSET, SET_PRODUCT_LIST, SET_TOTAL } from "../types/actionTypes";
 
 
 export const setCategories = (categories) => ({ type: SET_CATEGORIES, payload: categories });
 export const setProductList = (productList) => ({ type: SET_PRODUCT_LIST, payload: productList });
 export const setTotal = (total) => ({ type: SET_TOTAL, payload: total });
-export const decrementStock =(orderedProduct)=>({type:DECREMENT_PRODUCT_STOCK,payload:orderedProduct})
+
+export const decrementProductStock = (productId, count = 1) => {
+    return {
+        type: DECREMENT_PRODUCT_STOCK,
+        payload: {
+            product_id: Number(productId),
+            count: Number(count)
+        }
+    };
+};
 export const setFetchState = (fetch) => ({ type: SET_FETCH_STATE, payload: fetch });
 export const setLimit = (limit) => ({ type: SET_LIMIT, payload: limit });
 export const setOffset = (offset) => ({ type: SET_OFFSET, payload: offset });
 export const setFilter = (filter) => ({ type: SET_FILTER, payload: filter })
+export const setRating = (productId, userRating) => ({
+    type: SET_RATING, payload: {
+        productId: Number(productId),
+        rating: Number(userRating)
+    }
+})
 
 
 
@@ -38,7 +53,7 @@ export const fetchProductLists = (categoryId, sort) => {
         }
         if (filter) {
             params.append('filter', filter)
-           
+
         }
         if (limit) {
             params.append('limit', limit)

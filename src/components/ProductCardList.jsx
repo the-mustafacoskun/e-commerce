@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import { setCart } from "../store/actions/shoppingCartActions";
 import { useDispatch } from "react-redux";
 import ProductRating from "./ProductDetailsComponents/ProductRating";
+import { toast } from "react-toastify";
 
 export default function ProductCardList({
   id,
@@ -29,9 +30,10 @@ export default function ProductCardList({
       `/shop/${gender}/${categoryName}/${categoryId}/${nameSlug}/${id}`,
     );
   }, [history, gender, categoryName, categoryId, nameSlug, id]);
-
+ const [isClicked, setIsClicked] = useState(false);
   
   const handleAddCart = () => {
+      setIsClicked(true);
     const formattedProduct = {
       count: 1,
       checked: true,
@@ -43,6 +45,10 @@ export default function ProductCardList({
         category_id: categoryId
       }
     };
+     setTimeout(() => {
+      setIsClicked(false);
+    }, 2000);
+    toast.success('Ürün Sepete Eklendi');
     dispatch(setCart(formattedProduct));
   };
 
@@ -130,10 +136,11 @@ export default function ProductCardList({
 
           <button
             onClick={(e) => {
-              e.stopPropagation(); 
+             
               handleAddCart();     
+               e.stopPropagation(); 
             }}
-            className="flex items-center justify-center gap-2 bg-primary hover:bg-hover text-white font-medium text-sm px-6 py-3 rounded-xl transition-colors duration-200 active:scale-95 shadow-sm w-full sm:w-auto"
+            className={`flex items-center justify-center gap-2 ${isClicked?'bg-gray-400 hover:bg-gray-600':' bg-primary hover:bg-hover'}  text-white font-medium text-sm px-6 py-3 rounded-xl transition-colors duration-200 active:scale-95 shadow-sm w-full sm:w-auto`}
           >
             <Handbag className="w-5 h-5" />
             Sepete Ekle

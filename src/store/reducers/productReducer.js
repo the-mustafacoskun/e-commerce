@@ -1,4 +1,4 @@
-import { DECREMENT_PRODUCT_STOCK, SET_CATEGORIES, SET_FETCH_STATE, SET_FILTER, SET_LIMIT, SET_OFFSET, SET_PRODUCT_LIST, SET_TOTAL } from "../types/actionTypes"
+import { DECREMENT_PRODUCT_STOCK, SET_RATING, SET_CATEGORIES, SET_FETCH_STATE, SET_FILTER, SET_LIMIT, SET_OFFSET, SET_PRODUCT_LIST, SET_TOTAL } from "../types/actionTypes"
 
 
 const initialState = {
@@ -29,23 +29,62 @@ export const productReducer = (state = initialState, action) => {
             return { ...state, offset: action.payload }
         case SET_FILTER:
             return { ...state, filter: action.payload }
-        case DECREMENT_PRODUCT_STOCK: {
-            console.log("Mevcut liste:", state.productList);
-            console.log("Dizi mi:", Array.isArray(state.productList));
-            const updatedProductList = state.productList.products.map((product) => {
-                console.log("idler eşleşiyor mu?", product.id, action.payload.product_id);
-                if (product.id === action.payload.product_id) {
+        case SET_RATING: {
+            if (!action.payload?.productId) return state;
+
+            // API'den gelen veriye göre ürün dizisinin yerini tespit ediyoruz
+            const currentProducts = Array.isArray(state.productList)
+                ? state.productList
+                : (state.productList?.products || []);
+
+            // Döngü ile ilgili ürünü bulup rating değerini güncelliyoruz
+            const updatedProducts = currentProducts.map((product) => {
+                if (product.id === action.payload.productId) {
+                    const currentProductRating = Number(product.rating) || 0;
+                    const newRating = (Number(action.payload.rating) + currentProductRating) / 2;
+
                     return {
-                        ...product, stock: Math.max(0, product.stock - action.payload.count)
+                        ...product,
+                        rating: Number(newRating.toFixed(2)) // 2 basamağa yuvarla
                     };
                 }
                 return product;
-            })
+            });
+
+            // yapıyı koruyarak içine gömüyoruz
             return {
                 ...state,
-                productList: updatedProductList
+                productList: Array.isArray(state.productList)
+                    ? updatedProducts
+                    : { ...state.productList, products: updatedProducts }
             };
         }
+
+        case DECREMENT_PRODUCT_STOCK: {
+            if (!action.payload?.product_id) return state;
+
+            const currentProducts = Array.isArray(state.productList)
+                ? state.productList
+                : (state.productList?.products || []);
+
+            const updatedStockList = currentProducts.map((product) => {
+                if (product.id === action.payload.product_id) {
+                    return {
+                        ...product,
+                        stock: Math.max(0, product.stock - (action.payload.count || 1))
+                    };
+                }
+                return product;
+            });
+
+            return {
+                ...state,
+                productList: Array.isArray(state.productList)
+                    ? updatedStockList
+                    : { ...state.productList, products: updatedStockList }
+            };
+        }
+
         default:
             return state
     }
