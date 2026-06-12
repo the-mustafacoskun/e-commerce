@@ -1,6 +1,7 @@
 import { LayoutGrid, TableOfContents } from "lucide-react";
 import { useState } from "react";
 import Filter from "../Filter";
+import { useRef } from "react";
 
 export const ViewAndFilterButtons = ({
   onPriceFilter,
@@ -8,9 +9,11 @@ export const ViewAndFilterButtons = ({
   sort,
   productLength,
   setProductsDisplay,
-  productsDisplay
+  
 }) => {
+  
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
+  
   return (
     <div>
       <div className="flex flex-col justify-center md:flex-row md:justify-between md:px-10 xl:px-20 items-center gap-6 my-6 max-w-7xl xl:mx-auto">

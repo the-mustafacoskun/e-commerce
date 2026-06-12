@@ -53,6 +53,33 @@ export function ProductDetailsCard() {
       setIsClicked(false);
     }, 2000);
   };
+  useEffect(() => {
+    const handleCartStockUpdate = (event) => {
+      const { productId: updatedProductId, returnedCount } = event.detail;
+
+      // Eğer sepetten silinen ürün, şu an detay ekranında açık olan ürün ise local state'i güncelle
+      if (String(updatedProductId) === String(productId)) {
+        setState((prev) => {
+          if (!prev.product) return prev;
+          return {
+            ...prev,
+            product: {
+              ...prev.product,
+              stock: prev.product.stock + returnedCount, 
+            },
+          };
+        });
+      }
+    };
+
+    
+    window.addEventListener("cartStockUpdated", handleCartStockUpdate);
+
+    
+    return () => {
+      window.removeEventListener("cartStockUpdated", handleCartStockUpdate);
+    };
+  }, [productId]); // Açık olan ürünün id'si değiştikçe dinleyici kendini günceller
   const handleLikeClick =()=>{
     const savedLikes =localStorage.getItem('liked_products');
     let likesArray =savedLikes ? JSON.parse(savedLikes):[];

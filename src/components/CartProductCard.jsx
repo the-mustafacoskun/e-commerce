@@ -1,9 +1,20 @@
 import { Trash } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { deleteCartItem } from "../store/actions/shoppingCartActions";
+import { incrementProductStock } from "../store/actions/productActions";
 
 export default function CartProductCard({cart}) {
     const dispatch = useDispatch();
+    const handleDeleteClick = ()=>{
+      dispatch(deleteCartItem(cart))
+      dispatch(incrementProductStock(cart.product.id,cart.count))
+
+      window.dispatchEvent(
+      new CustomEvent("cartStockUpdated", {
+        detail: { productId: cart.product.id, returnedCount: cart.count },
+      })
+    );
+    }
   return (
     <div className="flex gap-4 w-full border-b border-b-gray-200 text-black py-4 items-stretch">
       <img src={cart.product.images?.[0]?.url} alt={cart.product.name} className="w-25 h-25 border border-zinc-300 rounded-lg"></img>
@@ -18,7 +29,7 @@ export default function CartProductCard({cart}) {
         </div>
         <div className="flex justify-between">
           <h5 className="text-alert-text"> {(cart.product.price)}$</h5>
-          <button onClick={()=>dispatch(deleteCartItem(cart))} className="pr-4 flex gap-1 items-center text-[12px]  text-second-text  hover:cursor-pointer"><Trash strokeWidth={1} /><span>Sil</span></button>
+          <button onClick={handleDeleteClick} className="pr-4 flex gap-1 items-center text-[12px]  text-second-text  hover:cursor-pointer"><Trash strokeWidth={1} /><span>Sil</span></button>
         </div>
       </div>
     </div>

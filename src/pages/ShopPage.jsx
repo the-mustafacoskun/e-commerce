@@ -23,7 +23,7 @@ function ShopPage() {
   const { categoryId, gender } = useParams();
   const dispatch = useDispatch();
   const history = useHistory();
-
+ 
   const [categoryCounts, setCategoryCounts] = useState({});
   const [allProducts, setAllProducts] = useState([]);
 

@@ -10,13 +10,14 @@ import {
   UserRound,
   X,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink, useLocation, useHistory } from "react-router-dom";
 import { setFilter } from "../../store/actions/productActions";
 import Cart from "../Cart";
 import { setUser } from "../../store/actions/clientActions";
 import LikedProduct from "../LikedProduct";
+import { useOnClickOutside } from "../../hooks/useOnClickOutside";
 
 function Header() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -31,6 +32,18 @@ function Header() {
   const categories = useSelector((store) => store.product.categories);
   const dispatch = useDispatch();
   const currenFilter = useSelector((store) => store.product.filter);
+
+  const shopRef = useRef(null);
+  const customerRef = useRef(null);
+  const likedRef = useRef(null);
+  const cartRef = useRef(null);
+  const seacrhref = useRef(null);
+
+  useOnClickOutside(seacrhref, () => setIsSearchOpen(false));
+  useOnClickOutside(cartRef, () => setIsCartOpen(false));
+  useOnClickOutside(shopRef, () => setShopDropDownOpen(false));
+  useOnClickOutside(customerRef, () => setIsCustomerOpen(false));
+  useOnClickOutside(likedRef, () => setIsLikedOpen(false));
 
   const handleInputChange = (e) => {
     dispatch(setFilter(e.target.value));
@@ -83,7 +96,6 @@ function Header() {
     history.push("/");
   };
 
- 
   const likedProducts =
     JSON.parse(localStorage.getItem("liked_products")) || [];
 
@@ -91,7 +103,6 @@ function Header() {
   const [, forceUpdate] = useState({});
 
   useEffect(() => {
-    
     const handleUpdate = () => forceUpdate({});
 
     window.addEventListener("storage", handleUpdate);
@@ -130,7 +141,7 @@ function Header() {
                 >
                   Home
                 </NavLink>
-                <div className="relative w-full">
+                <div ref={shopRef} className="relative w-full">
                   <button
                     className="flex font-link text-second-text hover:text-primary transition-colors whitespace-nowrap"
                     onClick={() => setShopDropDownOpen(!shopDropDownOpen)}
@@ -228,6 +239,7 @@ function Header() {
 
               {user && user.avatarUrl && user.token ? (
                 <div
+                  ref={customerRef}
                   className="relative inline-block hover:cursor-pointer"
                   onMouseEnter={() => setIsCustomerOpen(true)}
                   onMouseLeave={() => setIsCustomerOpen(false)}
@@ -289,7 +301,10 @@ function Header() {
 
               {/* İkonlar */}
               <div className="relative">
-                <div className="flex items-center gap-3 lg:gap-4 text-primary">
+                <div
+                  ref={seacrhref}
+                  className="flex items-center gap-3 lg:gap-4 text-primary"
+                >
                   <button
                     onClick={() => setIsSearchOpen(!isSearchOpen)}
                     className="hover:scale-110 transition-transform"
@@ -298,6 +313,7 @@ function Header() {
                   </button>
                   {/*beğenilenleri ekle buraya*/}
                   <div
+                    ref={likedRef}
                     onClick={() => {
                       setIsLikedOpen(!isLikedOpen);
                       likedProducts?.length < 1 && setIsLikedOpen(false);
@@ -309,7 +325,10 @@ function Header() {
                       {likedProducts?.length}
                     </span>
                     {isLikedOpen && (
-                      <div className="absolute w-70 h-fit bg-white top-10 right-0 rounded-xl border border-orange-300">
+                      <div
+                        onClick={(e) => e.stopPropagation()}
+                        className="absolute w-70 h-fit bg-white top-10 right-0 rounded-xl border border-orange-300"
+                      >
                         {likedProducts?.map((product) => (
                           <LikedProduct key={product.id} product={product} />
                         ))}
@@ -317,22 +336,44 @@ function Header() {
                     )}
                   </div>
 
-                  <div
-                    className={`flex items-center gap-1 ${totalCartProducts > 0 ? "text-alert-text" : "text-primary"}`}
-                    onClick={() => {
-                      setIsCartOpen(!isCartOpen);
-                      totalCartProducts < 1 && setIsCartOpen(false);
-                    }}
-                  >
-                    <ShoppingCart className="w-6 h-6 cursor-pointer hover:scale-120" />
-                    <span className="text-xs font-bold ">
-                      {totalCartProducts}
-                    </span>
+                  {/* SEPET GRUBU */}
+                  <div ref={cartRef} className="relative flex items-center">
+                    <button
+                      className={`flex items-center gap-1 transition-transform hover:scale-105 ${
+                        totalCartProducts > 0
+                          ? "text-alert-text"
+                          : "text-primary"
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation(); // 🚀 Tıklamanın dışarı sızıp menüyü kapatmasını engeller
+                        if (totalCartProducts > 0) {
+                          setIsCartOpen(!isCartOpen);
+                        }
+                      }}
+                    >
+                      <ShoppingCart className="w-6 h-6 cursor-pointer hover:scale-120" />
+                      <span className="text-xs font-bold">
+                        {totalCartProducts}
+                      </span>
+                    </button>
+
+                    {/* Açılır Sepet Paneli - cartRef sarmalayıcısının içinde kalmalı */}
+                    {isCartOpen && (
+                      <div
+                        onClick={(e) => e.stopPropagation()} 
+                        className="absolute top-10 right-0 z-50 animate-in fade-in duration-200"
+                      >
+                        <Cart setIsCartOpen={setIsCartOpen} />
+                      </div>
+                    )}
                   </div>
 
                   <button
                     className="lg:hidden p-1 text-text pr-0 sm:pr-4"
-                    onClick={() => setIsMobileOpen(!isMobileOpen)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsMobileOpen(!isMobileOpen);
+                    }}
                   >
                     {isMobileOpen ? <X size={28} /> : <Menu size={28} />}
                   </button>

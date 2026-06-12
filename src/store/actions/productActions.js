@@ -1,5 +1,5 @@
 import { api } from "../../api";
-import { DECREMENT_PRODUCT_STOCK, SET_CATEGORIES, SET_RATING, SET_FETCH_STATE, SET_FILTER, SET_LIMIT, SET_OFFSET, SET_PRODUCT_LIST, SET_TOTAL } from "../types/actionTypes";
+import { DECREMENT_PRODUCT_STOCK,INCREMENT_PRODUCT_STOCK, SET_CATEGORIES, SET_RATING, SET_FETCH_STATE, SET_FILTER, SET_LIMIT, SET_OFFSET, SET_PRODUCT_LIST, SET_TOTAL } from "../types/actionTypes";
 
 
 export const setCategories = (categories) => ({ type: SET_CATEGORIES, payload: categories });
@@ -14,6 +14,15 @@ export const decrementProductStock = (productId, count = 1) => {
             count: Number(count)
         }
     };
+};
+export const incrementProductStock = (productId, count) => {
+  return {
+    type: INCREMENT_PRODUCT_STOCK,
+     payload: {
+            product_id: Number(productId),
+            count: Number(count)
+        }
+  };
 };
 export const setFetchState = (fetch) => ({ type: SET_FETCH_STATE, payload: fetch });
 export const setLimit = (limit) => ({ type: SET_LIMIT, payload: limit });

@@ -32,26 +32,28 @@ export const productReducer = (state = initialState, action) => {
         case SET_RATING: {
             if (!action.payload?.productId) return state;
 
-            // API'den gelen veriye göre ürün dizisinin yerini tespit ediyoruz
+            
             const currentProducts = Array.isArray(state.productList)
                 ? state.productList
                 : (state.productList?.products || []);
-
-            // Döngü ile ilgili ürünü bulup rating değerini güncelliyoruz
+             const savedReviews =JSON.parse(localStorage.getItem('product_reviews')) ||[];
+         
             const updatedProducts = currentProducts.map((product) => {
+               
                 if (product.id === action.payload.productId) {
-                    const currentProductRating = Number(product.rating) || 0;
+                     const savedReview =savedReviews.find((p)=>p.id===product.id)
+                    const currentProductRating = Number(savedReview?.rating) || Number(product.rating) || 0;
                     const newRating = (Number(action.payload.rating) + currentProductRating) / 2;
 
                     return {
                         ...product,
-                        rating: Number(newRating.toFixed(2)) // 2 basamağa yuvarla
+                        rating: Number(newRating.toFixed(2)) 
                     };
                 }
                 return product;
             });
 
-            // yapıyı koruyarak içine gömüyoruz
+           
             return {
                 ...state,
                 productList: Array.isArray(state.productList)
