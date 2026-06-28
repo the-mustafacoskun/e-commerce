@@ -1,7 +1,6 @@
 import { LayoutGrid, TableOfContents } from "lucide-react";
 import { useState } from "react";
 import Filter from "../Filter";
-import { useRef } from "react";
 
 export const ViewAndFilterButtons = ({
   onPriceFilter,
